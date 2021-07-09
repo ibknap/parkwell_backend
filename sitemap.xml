@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <url>
+        <loc>https://www.parkwellafrica.com/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>1.00</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/authentication/login/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.51</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/authentication/register/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.64</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/how_it_works/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/about_us/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/privacy_policy/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/terms_of_use/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.80</priority>
+    </url>
+    <url>
+        <loc>https://www.parkwellafrica.com/maps/how_to_get_coordinates/</loc>
+        <lastmod>2021-05-06T23:07:51+00:00</lastmod>
+        <priority>0.51</priority>
+    </url>
+
+
+</urlset>

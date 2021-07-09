@@ -1,0 +1,21 @@
+Google(Gmail) Username = parkwell2021@gmail.com
+Google(Gmail) Password = Parkwell852456
+
+Pythonanywhere Username(email) = parkwell2021@gmail.com
+Pythonanywhere Password = Parkwell852456/
+
+Database Server superuser = Super
+Database Server Password = 852456poi
+Database Server Host = Parkwell-2210.postgres.pythonanywhere-services.com
+Database Server port = 12210
+
+Database name = parkwelldb
+Database username = parkwelldbuser
+Database parkwelldbuser password = 852456
+
+Namecheap Username = Parkwell2021
+Namecheap Password = Parkwell852456
+
+Parkwell superadmin username = parkwelladmin
+Parkwell superadmin email = parkwell2021@gmail.com
+Parkwell superadmin password = 852456
