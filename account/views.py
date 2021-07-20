@@ -1,4 +1,4 @@
-from .serializers import CompanyAdminProfileSerializer, LoginSerializer, ParkAdminProfileSerializer, RegisterSerializer, UserSerializer
+from .serializers import AdminLoginSerializer, CompanyAdminProfileSerializer, LoginSerializer, ParkAdminProfileSerializer, RegisterSerializer, UserSerializer
 from account.models import CompanyAdminProfile, ParkAdminProfile
 # from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
@@ -74,7 +74,7 @@ class RegisterAPI(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = Token.objects.get(user=user).key
-            self.data['message'] = "Successfully registered new user."
+            self.data['message'] = "Successfully registered new user!"
             self.data['username'] = user.username
             self.data['email'] = user.email
             self.data['user_id'] = user.id
@@ -92,7 +92,7 @@ class RegisterAsCompanyAdminAPI(GenericAPIView):
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token = Token.objects.get(user=user).key
-            self.data['message'] = "Successfully registered new user."
+            self.data['message'] = "Successfully registered as company admin!"
             self.data['username'] = user.username
             self.data['email'] = user.email
             self.data['user_id'] = user.id
@@ -105,7 +105,7 @@ class RegisterAsCompanyAdminAPI(GenericAPIView):
 
             if serializer.is_valid(raise_exception=True):
                 serializer.save(admin=user)
-                return Response(serializer.data)
+                return Response(self.data)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         else:
             self.data = serializer.errors
@@ -123,6 +123,23 @@ class LoginAPI(GenericAPIView):
             login(request, user)
             token = Token.objects.get(user=user)
             self.data['message'] = "Login successful!"
+            self.data['user_id'] = user.id
+            self.data['email'] = user.email
+            self.data['token'] = token.key
+            return Response(self.data, status=status.HTTP_200_OK)
+
+# ADMIN LOGIN
+class AdminLoginAPI(GenericAPIView):
+    serializer_class = AdminLoginSerializer
+    data = {}
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data, context={"request": request})
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.validated_data["user"]
+            login(request, user)
+            token = Token.objects.get(user=user)
+            self.data['message'] = "Login as admin successful!"
             self.data['user_id'] = user.id
             self.data['email'] = user.email
             self.data['token'] = token.key
@@ -148,14 +165,14 @@ class CompanyAdminProfileList(APIView):
 
 class CompanyAdminProfileDetail(APIView):
     # Api endpoint for retrieve CompanyAdminProfile instance.
-    def get_object(self, pk):
+    def get_object(self, user_id):
         try:
-            return CompanyAdminProfile.objects.get(pk=pk)
+            return CompanyAdminProfile.objects.get(admin=user_id)
         except CompanyAdminProfile.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        company_admin_profile = self.get_object(pk)
+    def get(self, request, user_id, format=None):
+        company_admin_profile = self.get_object(user_id)
         serializer = CompanyAdminProfileSerializer(company_admin_profile)
         return Response(serializer.data)
 
@@ -211,14 +228,14 @@ class ParkAdminProfileList(APIView):
 
 class ParkAdminProfileDetail(APIView):
     # Api endpoint for retrieve ParkAdminProfile instance.
-    def get_object(self, pk):
+    def get_object(self, user_id):
         try:
-            return ParkAdminProfile.objects.get(pk=pk)
+            return ParkAdminProfile.objects.get(admin=user_id)
         except ParkAdminProfile.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        park_admin_profile = self.get_object(pk)
+    def get(self, request, user_id, format=None):
+        park_admin_profile = self.get_object(user_id)
         serializer = ParkAdminProfileSerializer(park_admin_profile)
         return Response(serializer.data)
 

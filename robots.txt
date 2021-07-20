@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: http://www.parkwellafrica.com/sitemap.xml
+Sitemap: https://www.parkwell.africa/sitemap.xml

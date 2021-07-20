@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from account.models import CompanyAdminProfile, ParkAdminProfile
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
@@ -73,6 +74,42 @@ class LoginSerializer(serializers.Serializer):
         data["user"] = user
         return data
 
+class AdminLoginSerializer(serializers.Serializer):
+    username = serializers.CharField(style={"input_type": "text"}, write_only=True)
+    password = serializers.CharField(style={"input_type": "password"}, write_only=True)
+        
+    # Validation
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+        request = self.context.get("request")
+
+        if username and password:
+            user = authenticate(request=request, username=username, password=password)
+            if not user:
+                message = "Unable to login with provided credentials!"
+                raise serializers.ValidationError(message, code="authorization")
+        else:
+            message = "Must include your username and password!"
+            raise serializers.ValidationError(message, code="authorization")
+
+        try:
+            is_company_admin = CompanyAdminProfile.objects.get(admin=user)
+            data["user"] = is_company_admin.admin
+            return data
+        except CompanyAdminProfile.DoesNotExist:
+            try:
+                is_park_admin = ParkAdminProfile.objects.get(admin=user)
+                data["user"] = is_park_admin.admin
+                return data
+            except ParkAdminProfile.DoesNotExist:
+                try:
+                    is_super_admin = User.objects.get(username=user.username, is_superuser=True)
+                    data["user"] = is_super_admin
+                    return data
+                except User.DoesNotExist:
+                    message = "User not admin!"
+                    raise serializers.ValidationError(message)
 
 class CompanyAdminProfileSerializer(serializers.ModelSerializer):
     class Meta:

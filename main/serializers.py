@@ -21,3 +21,9 @@ class BookingSerializer(serializers.ModelSerializer):
         instance.departure_time = validated_data.get('departure_time', instance.departure_time)
         instance.save()
         return instance
+
+class ContactUsSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    email = serializers.EmailField()
+    subject = serializers.CharField()
+    message = serializers.CharField()

@@ -4,7 +4,13 @@ from . import views
 
 urlpatterns = [
     path('', views.Main.as_view(), name="main"),
-    path('docs/', views.Docs.as_view(), name="main"),
+    path('docs/', views.Docs.as_view(), name="docs"),
+    path('notify/', views.Notify.as_view(), name="notify"),
+
+    path(f'api/v{api_services.api_version()}/contact_us/', views.ContactUsAPI.as_view(), name='contact_us'),
+    
+    path(f"api/v{api_services.api_version()}/search_autocomplete/", views.SearchAutocomplete.as_view(), name="search_autocomplete"),
+    path(f"api/v{api_services.api_version()}/search/", views.Search.as_view(), name="search_page"),
 
     path(f'api/v{api_services.api_version()}/booking/', views.BookingList.as_view(), name='booking_list'),
     path(f'api/v{api_services.api_version()}/booking/<int:pk>/', views.BookingDetail.as_view(), name='booking_detail'),
