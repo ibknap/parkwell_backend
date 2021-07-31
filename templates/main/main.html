@@ -1,309 +1,318 @@
+{% extends 'layouts/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% load humanize %}
+{% load widget_tweaks %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <link rel="shortcut icon" href="/logo.png" type="image/x-icon" />
-    <meta itemprop="image" , property="og:image" content="/logo.png">
-    <meta property="og:image:width" content="1277">
-    <meta property="og:image:height" content="473">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.parkwell.africa/">
-    <meta property="og:description"
-        content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
-    <meta itemprop="description" name="description"
-        content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% block description %}
+    <meta property="og:description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+    <meta itemprop="description" name="description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
     <meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
     <meta property="og:title" content="Parkwell Africa">
     <title>Parkwell Africa</title>
-    <script>
-        $(function () {
-            $('a[href*=#]:not([href=#])').click(function () {
-                if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') &&
-                    location
-                        .hostname == this.hostname) {
-                    var target = $(this.hash);
-                    target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
-                    if (target.length) {
-                        $('html,body').animate({
-                            scrollTop: target.offset().top
-                        }, 1000);
-                        return false;
-                    }
-                }
-            });
-        });
-    </script>
+{% endblock %}
+{% block toplink %}
     <style>
-        .bg-green-500 {
-            background-color: #009A00;
+        #hero .search-box {
+            font-size: 15px;
+        }
+        
+        #hero .search-box h4 {
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        #hero .search-box form {
+            margin-top: 30px;
+            background: #fff;
+            padding: 5px 10px;
+            position: relative;
+            border-radius: 4px;
+            text-align: left;
+        }
+        
+        #hero .search-box form input[type="email"] {
+            border: 0;
+            padding: 4px 8px;
+            width: calc(100% - 100px);
+        }
+        
+        #hero .search-box form input[type="text"] {
+            border: 0;
+            padding: 4px 8px;
+            width: calc(100% - 100px);
+        }
+        
+        #hero .search-box form input[type="submit"] {
+            position: absolute;
+            right: -1px;
+            top: 0;
+            bottom: 0;
+            border: 0;
+            background: none;
+            font-size: 16px;
+            padding: 0 20px;
+            background: #009a00;
+            color: #fff;
+            transition: 0.3s;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        #hero .search-box form input[type="submit"]:hover {
+            background: #47cf47;
+        }
+        
+        #hero .search-ui a {
+            text-decoration: none;
+            width: 100%;
+        }
+        
+        #hero .search-ui a:link,
+        #hero .search-ui a:visited {
+            color: #141814;
+            padding: 4px 8px;
+            display: inline-block;
+        }
+        
+        #hero .search-ui a:hover,
+        #hero .search-ui a:active {
+            color: white;
+            background-color: #009a00;
+        }
+        
+        .info-box a {
+            color: #444444;
+            text-decoration: none;
         }
 
-        .text-green-500 {
+        .map-btn {
+            margin-top: 25px;
+            background: #009A00;
+            color: #fff;
+            border-radius: 20px 20px 20px 0;
+            padding: 10px 35px;
+            white-space: nowrap;
+            transition: 0.3s;
+            font-size: 20px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .map-btn:hover {
+            background: #000;
             color: #009A00;
         }
     </style>
-</head>
+{% endblock %}
 
-<body>
-
-    <!-- Section 1 -->
-    <section id="top" class="smoothScroll w-full px-6 pb-12 antialiased bg-black">
-        <div class="mx-auto max-w-7xl">
-
-            <nav class="relative z-50 h-24 select-none" x-data="{ showMenu: false }">
-                <div
-                    class="container relative flex flex-wrap items-center justify-between h-24 mx-auto overflow-hidden font-medium border-b border-gray-200 md:overflow-visible lg:justify-center sm:px-4 md:px-2">
-                    <div class="flex items-center justify-start w-1/4 h-full pr-4">
-                        <a href="/" class="inline-block py-4 md:py-0">
-                            <img src="{% static 'logo.png' %}" alt="Parkwell logo" srcset="" class="w-28" />
-                        </a>
-                    </div>
-                    <div class="top-0 left-0 items-start hidden w-full h-full p-4 text-sm bg-gray-900 bg-opacity-50 md:items-center md:w-3/4 md:absolute lg:text-base md:bg-transparent md:p-0 md:relative md:flex"
-                        :class="{'flex fixed': showMenu, 'hidden': !showMenu }">
-                        <div
-                            class="flex-col w-full h-auto overflow-hidden bg-white rounded-lg md:bg-transparent md:overflow-visible md:rounded-none md:relative md:flex md:flex-row">
-                            <a href="#_"
-                                class="inline-flex items-center block w-auto h-16 px-6 text-xl font-black leading-none text-gray-900 md:hidden">Parkwell<span
-                                    class="text-green-500">.</span></a>
-                            <div
-                                class="flex flex-col items-start justify-center w-full space-x-6 text-center lg:space-x-8 md:w-2/3 md:mt-0 md:flex-row md:items-center">
-                                <a href="#top"
-                                    class="inline-block w-full py-2 mx-0 ml-6 font-medium text-left text-green-500 md:ml-0 md:w-auto md:px-0 md:mx-2 lg:mx-3 md:text-center md:text-white">Home</a>
-                                <a href="#section-3"
-                                    class="inline-block w-full py-2 mx-0 font-medium text-left text-gray-700 md:w-auto md:px-0 md:mx-2 hover:text-green-500 lg:mx-3 md:text-center md:text-white">Features</a>
-                                <a href="#footer"
-                                    class="inline-block w-full py-2 mx-0 font-medium text-left text-gray-700 md:w-auto md:px-0 md:mx-2 hover:text-green-500 lg:mx-3 md:text-center md:text-white">Contact</a>
-
-                            </div>
-                            <div
-                                class="flex flex-col items-start justify-end w-full pt-4 md:items-center md:w-1/3 md:flex-row md:py-0">
-                                <a href="#section-4"
-                                    class="inline-flex items-center w-full px-6 py-3 text-sm font-medium leading-4 text-white bg-green-500 md:px-3 md:w-auto md:rounded-full lg:px-5 hover:bg-green-400 focus:outline-none md:focus:ring-2 focus:ring-0 focus:ring-offset-2 focus:ring-green-500">Get
-                                    Notified</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div @click="showMenu = !showMenu"
-                        class="fixed right-4 flex flex-col items-center items-end justify-center w-10 h-10 bg-white rounded-full cursor-pointer md:hidden hover:bg-gray-100">
-                        <svg class="w-6 h-6 text-gray-700" x-show="!showMenu" fill="none" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
-                            <path d="M4 6h16M4 12h16M4 18h16"></path>
-                        </svg>
-                        <svg class="w-6 h-6 text-gray-700" x-show="showMenu" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M6 18L18 6M6 6l12 12"></path>
-                        </svg>
-                    </div>
-                    <a href="#top"
-                        class="fixed bottom-4 right-4 flex flex-col items-center items-end justify-center w-10 h-10 bg-white rounded-full cursor-pointer md:hidden hover:bg-gray-100">
-                        <img src="{% static 'scroll-up.png' %}" alt="" srcset="">
-                    </a>
-                </div>
-            </nav>
-
-            <!-- Main Hero Content -->
-            <div class="container max-w-lg px-4 py-32 mx-auto text-left md:max-w-none md:text-center">
-                <h1
-                    class="text-5xl font-extrabold leading-10 tracking-tight text-left text-gray-900 md:text-center sm:leading-none md:text-6xl lg:text-7xl">
-                    <span class="inline text-green-500 md:block">Park well,</span>
-                    <span class="relative text-yellow-500 mt-2 md:inline-block">
-                        Park safe
-                    </span>
-                </h1>
-                <div class="mx-auto mt-5 text-white md:mt-12 md:max-w-lg md:text-center lg:text-lg">Parkwell is
-                    efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing
-                    traffic congestion and pollution.
-
-                </div>
-                <div class="flex flex-col items-center mt-12 text-center">
-                    <span class="relative inline-flex w-full md:w-auto">
-                        <a href="#section-4" type="button"
-                            class="inline-flex items-center justify-center w-full px-8 py-4 text-base font-bold leading-6 text-white bg-green-500 border border-transparent rounded-full md:w-auto hover:bg-green-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                            Notify Me
-                        </a>
-                    </span>
-                </div>
-            </div>
-            <!-- End Main Hero Content -->
-
-        </div>
-    </section>
-
-    <!-- Section 2 -->
-    <section class="px-2 py-32 bg-white md:px-0">
-        <div class="container items-center max-w-6xl px-8 mx-auto xl:px-5">
-            <div class="flex flex-wrap items-center sm:-mx-3">
-                <div class="w-full md:w-1/2 md:px-3">
-                    <div
-                        class="w-full pb-6 space-y-6 sm:max-w-md lg:max-w-lg md:space-y-4 lg:space-y-8 xl:space-y-9 sm:pr-5 lg:pr-0 md:pb-0">
-                        <h1
-                            class="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-4xl lg:text-5xl xl:text-6xl">
-                            <span class="block xl:inline text-yellow-500">Parking made easy</span> <br /> <span
-                                class="block text-green-500 xl:inline">Coming Soon!</span>
-                        </h1>
-                        <p class="mx-auto text-base text-gray-500 sm:max-w-md lg:text-xl md:max-w-3xl">It's never been easier to find and navigate to a safe and proper parking.</p>
-                        <div class="relative flex flex-col sm:flex-row sm:space-x-4">
-                            <a class="flex items-center w-full px-6 py-3 mb-3 text-lg text-white bg-green-500 rounded-md sm:mb-0 hover:bg-green-600 sm:w-auto">
-                                Free Application
-                            </a>
+{% block content %}
+    <section id="hero" class="d-flex align-items-center">
+        <div class="container-fluid" data-aos="zoom-out" data-aos-delay="100">
+            <div class="row justify-content-center">
+                <div class="col-xl-10">
+                    <div class="row">
+                        <div class="col-lg-6 col-md-8 mx-auto text-center">
+                            <h1 class="text-center">Find a Spot</h1>
+                            <a href="{% url 'map' %}" class="map-btn ml-0">On Map</a>
                         </div>
                     </div>
                 </div>
-                <div class="w-full md:w-1/2">
-                    <div class="w-full h-auto overflow-hidden rounded-md shadow-xl sm:rounded-xl">
-                        <img src="{% static 'hero_img.jpg' %}">
-                    </div>
-                </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 3 -->
-    <section id="section-3" class="py-20 bg-gray-50">
-        <div class="container items-center max-w-6xl px-4 px-10 mx-auto sm:px-20 md:px-32 lg:px-16">
-            <div class="flex flex-wrap items-center -mx-3">
-                <div class="order-1 w-full px-3 lg:w-1/2 lg:order-0">
-                    <div class="w-full lg:max-w-md">
-                        <h2 class="mb-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl font-heading">
-                            All the tools you need to manage your parking lot!</h2>
-                        <p class="mb-4 font-medium tracking-tight text-gray-400 xl:mb-6">It's never been easier to manage your parking lot. Our tools will help you with the following:</p>
-                        <ul>
-                            <li class="flex items-center py-2 space-x-4 xl:py-3">
-                                <svg class="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
-                                    </path>
-                                </svg>
-                                <span class="font-medium text-gray-500">Faster processing and better accessibility</span>
-                            </li>
-                            <li class="flex items-center py-2 space-x-4 xl:py-3">
-                                <svg class="w-8 h-8 text-yellow-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                                </svg>
-                                <span class="font-medium text-gray-500">Maximisation of underutilized spaces</span>
-                            </li>
-                            <li class="flex items-center py-2 space-x-4 xl:py-3">
-                                <svg class="w-8 h-8 text-green-500" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
-                                    </path>
-                                </svg>
-                                <span class="font-medium text-gray-500">Increased visibility and patronage</span>
-                            </li>
-                        </ul>
+    <main id="main">
+        <section id="clients" class="clients">
+            <div class="container-fluid" data-aos="zoom-in">
+                <div class="row justify-content-center">
+                    <div class="col-xl-10">
+                        <div class="owl-carousel clients-carousel">
+                            <img src="{% static 'images/icons/benz.svg' %}" height="25" alt="company logo" />
+                            <img src="{% static 'images/icons/lexus_logo.png' %}" width="40" alt="company logo" />
+                            <img src="{% static 'images/icons/honda.svg' %}" width="40" alt="company logo" />
+                        </div>
                     </div>
                 </div>
-                <div class="w-full px-3 mb-12 lg:w-1/2 order-0 lg:order-1 lg:mb-0"><img
-                        class="mx-auto sm:max-w-sm lg:max-w-full" src="{% static 'navigator.svg' %}"
-                        alt="feature image">
+            </div>
+        </section>
+
+        <section id="about" class="about section-bg">
+            <div class="container" data-aos="fade-up">
+                <div class="row no-gutters">
+                    <div class="content col-xl-5 d-flex align-items-stretch">
+                        <div class="content">
+                            <h3>A traffic management solution</h3>
+                            <p>
+                                Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution.
+                            </p>
+                            <a href="#!" class="about-btn"><span>About us</span> <i
+                                    class="bx bx-chevron-right"></i></a>
+                        </div>
+                    </div>
+                    <div class="col-xl-7 d-flex align-items-stretch">
+                        <div class="icon-boxes d-flex flex-column justify-content-center">
+                            <div class="row">
+                                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
+                                    <i class="bx bx-receipt"></i>
+                                    <h4>Our Mission</h4>
+                                    <p>
+                                        Transforming cities with simple earth friendly techonology solutions that give people seamless mobility and living choices.
+                                    </p>
+                                </div>
+                                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
+                                    <i class="bx bx-cube-alt"></i>
+                                    <h4>Our Vision</h4>
+                                    <p>
+                                        To make our cities better accessible, healthier, cleaner and more livable.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Section 4 -->
-    <section id="section-4" class="w-full px-8 py-16 bg-gray-100 xl:px-8">
-        <div class="max-w-5xl mx-auto">
-            <div class="flex flex-col items-center md:flex-row">
+        <section id="counts" class="counts">
+            <div class="container" data-aos="fade-up">
+                <div class="row">
+                    <div class="col-md-4 mt-5 mt-md-0">
+                        <div class="count-box">
+                            <i class="icofont-document-folder"></i>
+                            <span data-toggle="counter-up">{{ num_of_parks }}</span>
+                            <p>Parks</p>
+                        </div>
+                    </div>
 
-                <div class="w-full space-y-5 md:w-3/5 md:pr-16">
-                    <p class="font-medium text-green-500 uppercase">Get Early Access</p>
-                    <h2 class="text-2xl font-extrabold leading-none text-black sm:text-3xl md:text-5xl">
-                        Get Notified When We Go Live.
-                    </h2>
-                    <p class="text-xl text-gray-600 md:pr-16">Stay up to date with our development team as they work
-                        behind the scenes... </p>
+                    <div class="col-md-4 mt-5 mt-md-0">
+                        <div class="count-box">
+                            <i class="icofont-live-support"></i>
+                            <span data-toggle="counter-up">{{ num_of_bookings }}</span>
+                            <p>No of Bookings</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mt-5 mt-md-0">
+                        <div class="count-box">
+                            <i class="icofont-users-alt-5"></i>
+                            <span data-toggle="counter-up">{{ num_of_users }}</span>
+                            <p>Clients</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services section-bg">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                    <h2>How it <span style="color: #fcfc04;">Works</span></h2>
                 </div>
 
-                <div class="w-full mt-16 md:mt-0 md:w-2/5">
-                    <div
-                        class="relative z-10 h-auto p-8 py-10 overflow-hidden bg-white border-b-2 border-gray-300 rounded-lg shadow-2xl px-7">
-                        <h3 class="mb-6 text-2xl font-medium text-center">Keep me posted</h3>
-                        <form action="{% url 'notify' %}" method="POST">
+                <div class="row">
+                    <div class="col-sm-4 mt-4 mt-md-0">
+                        <div class="icon-box" data-aos="fade-up" data-aos-delay="400">
+                            <img src="{% static 'images/search.svg' %}" alt="search">
+                            <span class="text-white h4 ml-2">Search</span>
+                            <p style="line-height: 2;">Find safe and proper parking closest to your destination.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 mt-4 mt-md-0">
+                        <div class="icon-box" data-aos="fade-up" data-aos-delay="500">
+                            <img src="{% static 'images/navigate.svg' %}" alt="navigate">
+                            <span class="text-white h4 ml-2">Navigate</span>
+                            <p style="line-height: 2;">Drive to your destination using the in-app map.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 mt-4 mt-md-0">
+                        <div class="icon-box" data-aos="fade-up" data-aos-delay="600">
+                            <img src="{% static 'images/park.svg' %}" alt="park">
+                            <span class="text-white h4 ml-2">Park</span>
+                            <p style="line-height: 2;">Just arrive at your destination and Parkwell.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container" data-aos="fade-up">
+                <div class="section-title">
+                    <h2>Contact</h2>
+                    <p>We'd love to hear from you.</p>
+                </div>
+
+                <div class="row" data-aos="fade-up" data-aos-delay="100">
+                    <div class="col-lg-6">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="info-box">
+                                    <i class="bx bx-map"></i>
+                                    <h3>Our Address</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-box mt-4">
+                                    <i class="bx bx-envelope"></i>
+                                    <h3>Email Us</h3>
+                                    <p>
+                                        <a href="mailto:hello@parkwell.africa">hello@parkwell.africa</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="info-box mt-4">
+                                    <i class="bx bx-phone-call"></i>
+                                    <h3>Call Us</h3>
+                                    <p>
+                                        <a href="tel:022919400">02-2919400</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <form action="{% url 'contact_us' %}" method="POST" role="form" class="php-email-form">
                             {% csrf_token %}
-                            <input type="text" name="name" required
-                                class="block w-full px-4 py-3 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-green-500 focus:outline-none"
-                                placeholder="Name">
-                            <input type="email" name="email" required
-                                class="block w-full px-4 py-3 mb-4 border border-2 border-transparent border-gray-200 rounded-lg focus:ring focus:ring-green-500 focus:outline-none"
-                                placeholder="Email address">
-                            <div class="block">
-                                <button type="submit"
-                                    class="w-full px-3 py-4 font-medium text-white bg-green-500 rounded-lg">Submit</button>
+                            <div class="form-row">
+                                {% for field in contact_us_form %}
+                                    {% if forloop.counter > 0 and forloop.counter < 3 %}
+                                        <div class="col form-group">
+                                            {{ field|add_class:'form-control'}}
+                                            {% for error in field.errors %}
+                                                <i class="text-danger">{{ error }}</i>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <div class="form-group">
+                                {% for field in contact_us_form %}
+                                    {% if forloop.counter > 2 and forloop.counter < 5 %}
+                                        <div class="col form-group">
+                                            {{ field|add_class:'form-control'}}
+                                            {% for error in field.errors %}
+                                                <i class="text-danger">{{ error }}</i>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="text-center">
+                                <button type="submit">Send Message</button>
                             </div>
                         </form>
                     </div>
                 </div>
-
             </div>
-        </div>
-    </section>
-
-    <footer id="footer" class="bg-black text-gray-300 px-6 lg:px-8 py-6 md:py-12">
-
-        <div class="max-w-screen-xl mx-auto grid md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-x-8">
-
-            <div>
-                <h5 class="text-xl font-semibold text-white">Contact</h5>
-                <div class="space-y-4 md:space-y-6 mt-4">
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <svg class="w-6 h-6 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <address class="not-italic">
-                                7A, Milverton Road, <br>
-                                Ikoyi, Lagos State, <br>
-                                Nigeria.
-                            </address>
-                        </div>
-                    </div>
-                    <div class="flex items-start space-x-4">
-                        <div>
-                            <svg class="w-6 h-6 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="flex-1">
-                            <a href="mailto:parkwell2021@gmail.com"
-                                class="hover:text-gray-100">parkwell2021@gmail.com</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div
-            class="max-w-screen-xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-4 mt-16 lg:mt-20">
-            <img class="h-12" src="{% static 'logo.png' %}" alt="Parkwell logo">
-            <div class="text-sm">
-                ©2021 Parkwell Africa. All rights reserved.
-            </div>
-        </div>
-    </footer>
-
-
-    <!-- AlpineJS Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/2.8.0/alpine.js"></script>
-</body>
-
-</html>
+        </section>
+    </main>
+{% endblock %}

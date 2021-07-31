@@ -1,0 +1,138 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+<meta property="og:description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+<meta itemprop="description" name="description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+<meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+<meta property="og:title" content="Dashboard - Company Info">
+<title>Dashboard - Company Info</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+        background-color: #000 !important;
+        padding: 1.75rem 1.25rem;
+        color: #009A00;
+        font-weight: 300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'navigations/dashboard/left_panel.html' %}
+
+<div id="right-panel" class="right-panel">
+    {% include 'navigations/dashboard/header.html' %}
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <img src="{{ company.company_logo.url }}" class="rounded-circle border border-dark"
+                        alt="{{ company.company_name }} logo" width="100" height="100" />
+                </div>
+            </div>
+            <div class="card mt-2">
+                <div class="card-header">
+                    <strong class="card-title">{{ company.company_name }}</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td>{{ company.company_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td>{{ company.company_email }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Phone No.</th>
+                                <td>{{ company.company_number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">About</th>
+                                <td>
+                                    {{ company.company_about }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Verification Status</th>
+                                <td>
+                                    {% if company.verification == True %}
+                                    <button type="button" class="btn btn-sm btn-success text-white">Verified</button>
+                                    {% else %}
+                                    <button type="button" class="btn btn-sm btn-warning text-white">Pending</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td class="float-right">
+                                    <a href="{% url 'dashboard_company_edit' pk=company.id %}" type="button"
+                                        class="btn btn-secondary">Edit</a>
+
+                                    <a href="{% url 'dashboard_company_delete' pk=company.id %}" type="button"
+                                        class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

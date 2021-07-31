@@ -1,0 +1,155 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+<meta property="og:description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+<meta itemprop="description" name="description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+<meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+<meta property="og:title" content="Dashboard - Park Info">
+<title>Dashboard - Park Info</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+        background-color: #000 !important;
+        padding: 1.75rem 1.25rem;
+        color: #009A00;
+        font-weight: 300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'navigations/dashboard/left_panel.html' %}
+
+<div id="right-panel" class="right-panel">
+    {% include 'navigations/dashboard/header.html' %}
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">{{ park.park_name }}</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td>{{ park.park_name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td>{{ park.park_email }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Phone No.</th>
+                                <td>{{ park.park_number }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total parking slots</th>
+                                <td>{{ park.total_parking_space }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Occupied parking slots</th>
+                                <td>{{ park.occupied_space }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Address</th>
+                                <td>{{ park.park_address }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Coordinates</th>
+                                <td>lon - {{ park.park_lon }}, lat - {{ park.park_lat }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Closing time</th>
+                                <td>{{ park.park_closing_time }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">About</th>
+                                <td>
+                                    {{ park.park_about }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Company</th>
+                                <td>{{ park.company }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Company Admin</th>
+                                <td>
+                                    {{ park.company.administrator }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <td class="float-right">
+                                    <a href="{% url 'dashboard_park_edit' pk=park.id %}" type="button"
+                                        class="btn btn-secondary">Edit</a>
+
+                                    <a href="{% url 'dashboard_park_delete' pk=park.id %}" type="button"
+                                        class="btn btn-danger">Delete</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>
+{% endblock %}

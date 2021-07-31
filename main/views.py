@@ -1,17 +1,15 @@
-from main.serializers import BookingSerializer, ContactUsSerializer
-from parkwell_backend.settings import EMAIL_HOST_USER
+from django.http.response import Http404, HttpResponseRedirect
+from main.forms import BookingForm, ContactUsForm, NotifyForm
+from django.views.generic import TemplateView, DetailView
 from django.core.mail import send_mail, BadHeaderError
-from django.views.generic import TemplateView
+from parkwell_backend.settings import EMAIL_HOST_USER
+from django.shortcuts import redirect, render
 from rest_framework.response import Response
 from django.views.generic.base import View
 from email.errors import HeaderParseError
-from rest_framework.views import APIView
-from django.http.response import Http404
 from django.contrib import messages
-from django.shortcuts import render
 from django.template import loader
 from company.models import Company
-from main.forms import NotifyForm
 from rest_framework import status
 from main.models import Booking
 from django.db.models import Q
@@ -21,12 +19,9 @@ import socket
 
 class Main(TemplateView):
     template_name = "main/main.html"
-
-class Docs(TemplateView):
-    template_name = "main/docs.html"
     
 class Notify(View):
-    def post(self, request, format=None):
+    def post(self, request, *args, **kwargs):
         notify_form = NotifyForm(request.POST)
         if notify_form.is_valid():
             context = {}
@@ -37,102 +32,109 @@ class Notify(View):
             context['subject'] = 'Live Notification'
             context['name'] = notify_form.cleaned_data.get('name')
             context['from_email'] = notify_form.cleaned_data.get('email')
-            context['message'] = f"Name: {name} \n\n Email: {from_email}"
+            context['message'] = "Live Notification Listing!!!"
             actual_message = loader.render_to_string('emails/message.html', context)
             try:
                 send_mail(subject, actual_message, from_email, [EMAIL_HOST_USER,], fail_silently=False, html_message=actual_message)
                 messages.success(request, 'Notification for "Live Launch" successfully sent')
-                return render(request, 'main/message.html')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             except socket.gaierror:
                 messages.error(request, 'No internet connect! check your network.')
-                return render(request, 'main/message.html')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             except HeaderParseError:
                 messages.error(request, 'A user has an invalid email domain')
-                return render(request, 'main/message.html')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             except BadHeaderError:
                 messages.error(request, 'Bad header')
-                return render(request, 'main/message.html')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             except TimeoutError:
                 messages.error(request, 'Time out')
-                return render(request, 'main/message.html')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-# BOOKING
-class BookingList(APIView):
-    # Api endpoint for view all Bookings.
-    def get(self, request, format=None):
-        booking = Booking.objects.all()
-        serializer = BookingSerializer(booking, many=True)
-        return Response(serializer.data)
+class Booking(View):
+    template_name='booking/detail.html'
 
-class BookingDetail(APIView):
-    # Api endpoint for retrieve Booking instance.
-    def get_object(self, pk):
+    def get(self, request, pk, *args, **kwargs):
+        context = {}
+        park = Park.objects.get(id=pk)
+        context['park'] = park
+        return render(request, self.template_name, context)
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponse('POST request!')
+
+class BookingDetail(DetailView):
+    model = Booking
+    template_name='booking/detail.html'
+    context_object_name = "booking"
+
+class BookingControl(View):
+    def get_object(self, id):
         try:
-            return Booking.objects.get(pk=pk)
+            return Booking.objects.get(id=id)
         except Booking.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        booking = self.get_object(pk)
-        serializer = BookingSerializer(booking)
-        return Response(serializer.data)
-
-class BookingCreate(APIView):
-    def post(self, request, park_id, format=None):
+    def post(self, request, park_id, id, *args, **kwargs):
         try:
             park = Park.objects.get(id=park_id)
+            booking_form = BookingForm(request.POST)
+            if booking_form.is_valid():
+                booking_save = booking_form.save(commit=False)
+                booking_save.park = park
+                booking_save.save()
+                messages.success(request, 'Successfully booked a space!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         except:
-            park = None
-        if park == None: return Response({"message": "Please select a valid park to booking in!"})
-        serializer = BookingSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(park=park)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            messages.error(request, 'Park not associated with parkwell!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-class BookingUpdate(APIView):
-    # Api endpoint for update Booking instance.
-    def get_object(self, pk):
-        try:
-            return Booking.objects.get(pk=pk)
-        except Booking.DoesNotExist:
-            raise Http404
-
-    def put(self, request, pk, format=None):
-        booking = self.get_object(pk)
-        serializer = BookingSerializer(booking, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class BookingDelete(APIView):
-    # Api endpoint for delete Booking instance.
-    def get_object(self, pk):
-        try:
-            return Booking.objects.get(pk=pk)
-        except Booking.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, pk, format=None):
-        booking = self.get_object(pk)
+    def delete(self, request, park_id, id, *args, **kwargs):
+        booking = self.get_object(id)
         booking.delete()
-        return Response({"message": "Booking info deleted!"}, status=status.HTTP_204_NO_CONTENT)
+        messages.success(request, 'Successfully deleted booking!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-class ContactUsAPI(APIView):
-    def post(self, request, format=None):
-        serializer = ContactUsSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            data = serializer.validated_data
-            email = data.get('email')
-            name = data.get('name')
-            subject = data.get('subject')
-            message = data.get('message')
-            send_mail(f'Email from {name}', f"{email} \n\n {message}", email, [EMAIL_HOST_USER,], fail_silently=False)
-            return Response({"message": "Contact message sent!"})
-        return Response({"message": "Message not sent!"}, status=status.HTTP_400_BAD_REQUEST)
+class ContactUs(View):
+    def get(self, request, *args, **kwargs):
+        return redirect('main')
 
-class SearchAutocomplete(APIView):
+    def post(self, request, *args, **kwargs):
+        form = ContactUsForm(request.POST)
+        if form.is_valid():
+            context = {}
+            from_email = form.cleaned_data['email']
+            name = form.cleaned_data['name']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            to_email = EMAIL_HOST_USER
+            context['name'] =  name
+            context['from_email'] =  from_email
+            context['subject'] = subject
+            context['message'] = message
+            actual_message = loader.render_to_string('emails/message.html', context)
+
+            try:
+                send_mail(subject, actual_message, from_email, [to_email], fail_silently = False, html_message=actual_message)
+                messages.success(request, 'Message sent')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except socket.gaierror:
+                messages.error(request, 'No internet connect')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except HeaderParseError:
+                messages.error(request, 'A user has an invalid domain')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except BadHeaderError:
+                messages.error(request, 'Bad header')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except TimeoutError:
+                messages.error(request, 'Time out')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except ValueError as e:
+                messages.error(request, f'{e}')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class SearchAutocomplete(View):
     def get(self, request, *args, **kwargs):
         query_results = list()
         if 'term' in request.GET:
@@ -148,7 +150,7 @@ class SearchAutocomplete(APIView):
             return Response(query_results)
         return Response({"message": "'term' not in search!"}, status=status.HTTP_400_BAD_REQUEST)
 
-class Search(APIView):
+class Search(View):
     model = Park
     template_name = "home/search_page.html"
     def get_queryset(self):
@@ -160,3 +162,13 @@ class Search(APIView):
     
     def get(self, request, *args, **kwargs):
         return Response(self.get_queryset())
+
+# handling page errors
+def error_400(request, exception):
+    return render(request, 'notification/error_pages/400.html', status=400)
+def error_403(request, exception):
+    return render(request, 'notification/error_pages/403.html', status=403)
+def error_404(request, exception):
+    return render(request, 'notification/error_pages/404.html', status=404)
+def error_500(request):
+    return render(request, 'notification/error_pages/500.html', status=500)

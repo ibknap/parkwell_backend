@@ -1,0 +1,157 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+<meta property="og:description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+<meta itemprop="description" name="description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+<meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+<meta property="og:title" content="Dashboard - Bookings">
+<title>Dashboard - Bookings</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+        background-color: #000 !important;
+        padding: 1.75rem 1.25rem;
+        color: #009A00;
+        font-weight: 300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'navigations/dashboard/left_panel.html' %}
+
+<div id="right-panel" class="right-panel">
+    {% include 'navigations/dashboard/header.html' %}
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="card">
+                <div class="card-header">
+                    <strong class="card-title">Bookings</strong>
+                </div>
+                <div class="table-stats order-table ov-h">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th class="serial">ID</th>
+                                <th>Name</th>
+                                <th>Arrival Time</th>
+                                <th>Departure Time</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            <tr>
+                                <td class="serial">{{ booking.id }}</td>
+                                <td>
+                                    {{ booking.full_name }}
+                                </td>
+                                <td>
+                                    <span class="product">{{ booking.arrival_time }}</span>
+                                </td>
+                                <td>
+                                    <span class="product">{{ booking.departure_time }}</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
+                                        data-target="#viewmodal{{ booking.id }}">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+
+                            <div class="modal fade" id="viewmodal{{ booking.id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="viewmodal{{ booking.id }}Label" aria-hidden="true">
+                                <div class="modal-dialog modal-md" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-center" id="viewmodal{{ booking.id }}Label">
+                                                <b>Booking Info</b>
+                                            </h5>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <b>Name:</b> {{ booking.full_name }} <br/>
+                                                    <b>Email:</b> <a href="mailto:{{ booking.email }}">{{ booking.email }}</a> <br/>
+                                                    <b>Booking Park:</b> {{ booking.park }} <br/>
+                                                    <b>Booking Company:</b> {{ booking.park.company }} <br/>
+                                                    <b>Mobile Number:</b> <a href="tel:{{ booking.mobile_number }}">{{ booking.mobile_number }}</a> <br/>
+                                                    <b>Arrival time:</b> {{ booking.arrival_time }} <br/>
+                                                    <b>Departure time:</b> {{ booking.departure_time }} <br/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                                Back
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>
+{% endblock %}

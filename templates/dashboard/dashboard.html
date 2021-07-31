@@ -1,0 +1,187 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+    <meta property="og:description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+    <meta itemprop="description" name="description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+    <meta property="og:title" content="Dashboard">
+    <title>Dashboard</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+    
+    .traffic-chart {
+        min-height: 335px;
+    }
+    
+    #flotPie1 {
+        height: 150px;
+    }
+    
+    #flotPie1 td {
+        padding: 3px;
+    }
+    
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+    
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    
+    #flotLine5 {
+        height: 105px;
+    }
+    
+    #flotBarChart {
+        height: 150px;
+    }
+    
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+    background-color: #000 !important;
+    padding: 1.75rem 1.25rem;
+    color: #009A00;
+    font-weight: 300;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+    {% include 'navigations/dashboard/left_panel.html' %}
+
+    <div id="right-panel" class="right-panel">
+        {% include 'navigations/dashboard/header.html' %}
+
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="card" style="background-color: #fcfc04 !important; box-shadow: 0px 7px 13px 0px grey;">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-2">
+                                        <i class="ti-bookmark-alt"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                <span class="count text-dark">{{ num_of_bookings }}</span>
+                                            </div>
+                                            <div class="stat-heading text-dark">Bookings</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="card" style="background-color: #000 !important; box-shadow: 0px 7px 13px 0px grey;">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-3">
+                                        <i class="ti-car"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                <span class="count text-white">{{ num_of_parks }}</span>
+                                            </div>
+                                            <div class="stat-heading text-white">Parks</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="card" style="background-color: #009A00 !important; box-shadow: 0px 7px 13px 0px grey;">
+                            <div class="card-body">
+                                <div class="stat-widget-five">
+                                    <div class="stat-icon dib flat-color-4">
+                                        <i class="pe-7s-users"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <div class="text-left dib">
+                                            <div class="stat-text">
+                                                <span class="count text-white">{{ num_of_users }}</span>
+                                            </div>
+                                            <div class="stat-heading text-white">Clients</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Recent Bookings On Parkwell</strong>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="serial">ID</th>
+                                            <th>Full Name</th>
+                                            <th>Email</th>
+                                            <th>Park</th>
+                                            <th>Company</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                            <tr>
+                                                <td class="serial">{{ booking.id }}</td>
+                                                <td>
+                                                    <span class="name">{{ booking.full_name }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="product">{{ booking.email }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="product">{{ booking.park }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="product">{{ booking.park.company.company_name }}</span>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+    </div>
+{% endblock %}

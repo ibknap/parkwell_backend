@@ -1,1 +1,17 @@
-verification on admin login
+>>> Dashboard control access
+>>> lisiting db
+>>> user detail page
+>>> booking page
+>>> space taken
+>>> commit the verification of admins
+>>> add get lon and lat
+>>> KYC
+>>> Signup before using map
+>>> get users data to db
+>>> change "on mp" to "find a parking space"
+>>> search on mobile view
+
+
+
+>>> change email address(full access)
+>>> pythonanywhere payment(change card)

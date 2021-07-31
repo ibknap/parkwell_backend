@@ -1,0 +1,36 @@
+{% load static %}
+
+{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
+{% else %}
+    <footer id="footer">
+        <div class="container d-md-flex py-4">
+            <div class="mr-md-auto text-left">
+                <div class="copyright">
+                    &copy; Copyright <strong><span>ParkWell Africa</span></strong>. All Rights Reserved
+                </div>
+            </div>
+            <div class="mr-md-auto text-right">
+                <ul class="list-unstyled">
+                    <div class="d-flex">
+                        <!-- linkedin -->
+                        <a class="mx-2" href="https://www.linkedin.com/company/parkwell-africa" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-lg fa-linkedin-in"></i>
+                        </a>
+                        <!-- instagram -->
+                        <a class="mx-2" href="https://www.instagram.com/parkwellhq/" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-lg fa-instagram"></i>
+                        </a>
+                        <!-- twitter -->
+                        <a class="mx-2" href="https://www.twitter.com/ParkWellHQ/" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-lg fa-twitter"></i>
+                        </a>
+                        <!-- facebook -->
+                        <a class="mx-2" href="https://www.facebook.com/ParkWellHQ/" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-lg fa-facebook-f"></i>
+                        </a>
+                    </div>
+                </ul>
+            </div>
+        </div>
+    </footer>
+{% endif %}

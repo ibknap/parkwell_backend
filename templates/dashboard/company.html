@@ -1,0 +1,150 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+<meta property="og:description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+<meta itemprop="description" name="description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+<meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+<meta property="og:title" content="Dashboard - Company">
+<title>Dashboard - Company</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+    background-color: #000 !important;
+    padding: 1.75rem 1.25rem;
+    color: #009A00;
+    font-weight: 300;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'navigations/dashboard/left_panel.html' %}
+
+<div id="right-panel" class="right-panel">
+    {% include 'navigations/dashboard/header.html' %}
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong class="card-title">Company</strong>
+                            <a href="{% url 'dashboard_company_add' %}" type="button"
+                                class="btn btn-sm btn-dark float-right">
+                                Register Company</a>
+                        </div>
+                        <div class="table-stats order-table ov-h table-responsive">
+                            <table class="table table-hover table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="serial">ID</th>
+                                        <th class="avatar">Logo</th>
+                                        <th>Name</th>
+                                        <th>Email status</th>
+                                        <th>Verify</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for company in companies %}
+                                    <tr>
+                                        <td class="serial">{{ company.id }}</td>
+                                        <td class="avatar">
+                                            <div class="round-img">
+                                                <a href="#"><img class="rounded-circle border border-dark"
+                                                        src="{{ company.company_logo.url }}" width="42" height="42"
+                                                        alt="" /></a>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="name">{{ company.company_name }}</span>
+                                        </td>
+                                        <td>
+                                            <form action="{% url 'dashboard_check_email' email=company.company_email %}"
+                                                method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-sm btn-secondary text-white">Check
+                                                    email</button>
+                                            </form>
+                                        </td>
+                                        <td>
+                                            {% if company.verification == True %}
+                                            <button type="button"
+                                                class="btn btn-sm btn-success text-white">Verified</button>
+                                            {% else %}
+                                            <button type="button"
+                                                class="btn btn-sm btn-warning text-white">Pending</button>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'dashboard_company_detail' pk=company.id %}" type="button"
+                                                class="btn btn-sm btn-primary text-white">View</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>
+{% endblock %}

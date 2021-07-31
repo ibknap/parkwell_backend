@@ -1,0 +1,35 @@
+{% load static %}
+
+{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
+{% else %}
+    <header id="header" class="fixed-top">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-xl-10 d-flex align-items-center">
+                    <h1 class="logo mr-auto">
+                        <a class="navbar-brand" href="{% url 'main' %}"><img src="{% static 'images/logo2.png' %}" height="40" alt="logo" /></a>
+                    </h1>
+                    <nav class="nav-menu d-none d-lg-block">
+                        <ul>
+                            <li class="active"><a href="#header">Home</a></li>
+                            <li><a href="#about">About</a></li>
+                            <li><a href="#services">Services</a></li>
+                            <li><a href="#contact">Contact</a></li>
+                        </ul>
+                    </nav>
+                    <div>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.administrator.is_park_admin %}
+                                <a href="{% url 'dashboard' %}" class="register-btn d-inline">Dashboard</a>
+                            {% endif %}
+                            <a href="{% url 'logout' %}" class="get-started-btn d-inline">Logout</a>
+                        {% else %}
+                            <a href="{% url 'register' %}" class="register-btn d-inline">Register</a>
+                            <a href="{% url 'login' %}" class="get-started-btn d-inline">Login</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endif %}

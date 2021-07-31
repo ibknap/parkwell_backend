@@ -9,6 +9,6 @@ class ParkInline(admin.StackedInline):
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ('company_name', 'company_email', 'admin', 'id')
-    search_fields = ('company_name__startswith', 'company_email__startswith', 'admin__startswith', 'id__startswith',)
+    list_display = ('company_name', 'company_email', 'administrator', 'id')
+    search_fields = ('company_name__startswith', 'company_email__startswith', 'administrator__startswith', 'id__startswith',)
     inlines = [ParkInline]

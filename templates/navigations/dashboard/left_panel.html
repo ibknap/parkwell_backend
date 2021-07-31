@@ -1,0 +1,40 @@
+{% load static %}
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="menu-item {% if request.get_full_path == '/dashboard/' %}active{% endif %}">
+                    <a href="{% url 'dashboard' %}" class="text-decoration-none"><i
+                            class="menu-icon fa fa-laptop"></i>Dashboard
+                    </a>
+                </li>
+                <li class="menu-item {% if request.get_full_path == '/dashboard/company/' %}active{% endif %}">
+                    <a href="{% url 'dashboard_company' %}" class="text-decoration-none">
+                        <i class="menu-icon fa fa-building-o"></i>Company</a>
+                </li>
+                <li class="menu-item {% if request.get_full_path == '/dashboard/park/' %}active{% endif %}">
+                    <a href="{% url 'dashboard_park' %}" class="text-decoration-none">
+                        <i class="menu-icon fa fa-th"></i>Park</a>
+                </li>
+                <li class="menu-item {% if request.get_full_path == '/dashboard/cadmin/' %}active{% endif %}">
+                    <a href="{% url 'dashboard_cadmin' %}" class="text-decoration-none">
+                        <i class="menu-icon fa fa-user"></i>Company Admin</a>
+                </li>
+                <li class="menu-item {% if request.get_full_path == '/dashboard/padmin/' %}active{% endif %}">
+                    <a href="{% url 'dashboard_padmin' %}" class="text-decoration-none">
+                        <i class="menu-icon fa fa-user"></i>Park Admin
+                    </a>
+                </li>
+                <li class="menu-item {% if request.get_full_path == '/dashboard/bookings/' %}active{% endif %}">
+                    <a href="{% url 'dashboard_bookings' %}" class="text-decoration-none">
+                        <i class="menu-icon fa fa-car"></i>Booking
+                    </a>
+                </li>
+                <li class="menu-item mt-5">
+                    <small>Copyright &copy; 2021 ParkWell Africa</small>
+                    <small>Powered by El-nino</small>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</aside>

@@ -1,283 +1,240 @@
-from .serializers import AdminLoginSerializer, CompanyAdminProfileSerializer, LoginSerializer, ParkAdminProfileSerializer, RegisterSerializer, UserSerializer
-from account.models import CompanyAdminProfile, ParkAdminProfile
-# from rest_framework.permissions import IsAuthenticated
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from account.forms import AdministratorForm, LoginForm, RegisterForm
+from .email_verification_token import email_activation_token
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.auth import authenticate, login, logout
+from django.utils.encoding import force_bytes, force_text
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail, BadHeaderError
+from parkwell_backend.settings import EMAIL_HOST_USER
+from django.http.response import HttpResponseRedirect
+from django.views.generic.detail import DetailView
 from rest_framework.generics import GenericAPIView
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import login, logout
-from rest_framework.response import Response
+from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
-from rest_framework.views import APIView
+from email.errors import HeaderParseError
+from account.models import Administrator
+from django.views.generic import View
+from django.contrib import messages
+from django.template import loader
 from rest_framework import status
 from django.http import Http404
+import socket
 
-# USER
-class UserList(APIView):
-    # Api endpoint for view all User.
-    def get(self, request, format=None):
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
+class UserDetail(DetailView):
+    model = User
+    template_name='account/user_detail.html'
+    context_object_name = "user"
 
-class UserDetail(APIView):
-    # Api endpoint for retrieve User instance.
-    def get_object(self, token):
+class UserControl(LoginRequiredMixin, View):
+    login_url = 'login'
+    def get_object(self, id):
         try:
-            return Token.objects.get(key=token)
-        except Token.DoesNotExist:
-            raise Http404
-
-    def get(self, request, token, format=None):
-        user = self.get_object(token)
-        serializer = UserSerializer(user.user)
-        return Response(serializer.data)
-
-class UserUpdate(APIView):
-    # Api endpoint for update User instance.
-    # permission_classes = [IsAuthenticated,]
-    
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
+            return User.objects.get(id=id)
         except User.DoesNotExist:
             raise Http404
 
-    def put(self, request, pk, format=None):
-        user = self.get_object(pk)
-        serializer = UserSerializer(user, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class UserDelete(APIView):
-    # Api endpoint for delete User instance.
-    # permission_classes = [IsAuthenticated,]
-    
-    def get_object(self, pk):
-        try:
-            return User.objects.get(pk=pk)
-        except User.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, pk, format=None):
-        user = self.get_object(pk)
+    def delete(self, request, id, *args, **kwargs):
+        user = self.get_object(id)
         user.delete()
-        return Response({"message": "User deleted!"}, status=status.HTTP_204_NO_CONTENT)
+        messages.success(request, 'Successfully deleted user!')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
-# REGISTER
-class RegisterAPI(GenericAPIView):
-    serializer_class = RegisterSerializer
-    data = {}
+class Register(View):
+    template_name = 'account/register.html'
+    context = {}
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            token = Token.objects.get(user=user).key
-            self.data['message'] = "Successfully registered new user!"
-            self.data['username'] = user.username
-            self.data['email'] = user.email
-            self.data['user_id'] = user.id
-            self.data['token'] = token
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, 'You are logged in already!')
+            return redirect('main')
         else:
-            self.data = serializer.errors
-        return Response(self.data)
-
-class RegisterAsCompanyAdminAPI(GenericAPIView):
-    serializer_class = RegisterSerializer
-    data = {}
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            token = Token.objects.get(user=user).key
-            self.data['message'] = "Successfully registered as company admin!"
-            self.data['username'] = user.username
-            self.data['email'] = user.email
-            self.data['user_id'] = user.id
-            self.data['token'] = token
-
-            serializer = CompanyAdminProfileSerializer(data=request.data)
-            if CompanyAdminProfile.objects.filter(admin=user).exists():
-                message = {"message": "User already has a company admin profile"}
-                return Response(message)
-
-            if serializer.is_valid(raise_exception=True):
-                serializer.save(admin=user)
-                return Response(self.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        else:
-            self.data = serializer.errors
-        return Response(self.data)
-
-# LOGIN
-class LoginAPI(GenericAPIView):
-    serializer_class = LoginSerializer
-    data = {}
+            self.context['register_form'] = RegisterForm()
+            return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={"request": request})
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data["user"]
-            login(request, user)
-            token = Token.objects.get(user=user)
-            self.data['message'] = "Login successful!"
-            self.data['user_id'] = user.id
-            self.data['email'] = user.email
-            self.data['token'] = token.key
-            return Response(self.data, status=status.HTTP_200_OK)
+        register_form = RegisterForm(request.POST)
+        if register_form.is_valid():
+            context = {}
+            email = register_form.cleaned_data.get('email')
+            username = register_form.cleaned_data.get('username')
+            register_save = register_form.save(commit=False)
+            register_save.is_active = False
+            register_save.save()
+            current_site = get_current_site(request)
+            subject = 'Parkwell Activation.'
 
-# ADMIN LOGIN
-class AdminLoginAPI(GenericAPIView):
-    serializer_class = AdminLoginSerializer
-    data = {}
+            to_email = email
+            context['domain'] = current_site.domain
+            context['uid'] = urlsafe_base64_encode(force_bytes(register_save.pk))
+            context['token'] = email_activation_token.make_token(register_save)
+            context['subject'] = subject
+            context['message'] = f"Hi {username}, Please verify your parkwell account to be able to login by clicking on the link below to confirm your registration."
+            actual_message = loader.render_to_string('emails/message.html', context)
+
+            try:
+                send_mail(subject, actual_message, EMAIL_HOST_USER, [to_email], fail_silently = False, html_message=actual_message)
+                messages.success(request, 'Check email inbox or spam to confirm email!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except socket.gaierror:
+                messages.error(request, 'No internet connect')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except HeaderParseError:
+                messages.error(request, 'A user has an invalid domain')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except BadHeaderError:
+                messages.error(request, 'Bad header')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except TimeoutError:
+                messages.error(request, 'Time out')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            except ValueError as e:
+                messages.error(request, f'{e}')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        return render(request, self.template_name, {'register_form': register_form})
+
+class VerifyEmail(View):
+    def get(self, request, uidb64, token, *args, **kwargs):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except:
+            user = None
+            messages.error(request, 'Invalid user id')
+            return redirect('main')
+            
+        if user is not None and email_activation_token.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.success(request, 'Thank you for your email confirmation. Now you can login.')
+            return redirect('login')
+        messages.error(request, 'Activation link is invalid!')
+        return redirect('login')
+
+class AdminRegister(GenericAPIView):
+    template_name = 'account/admin_register.html'
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, 'You are logged in already!')
+            return redirect('main')
+        else:
+            self.context['register_form'] = RegisterForm()
+            self.context['administrator_form'] = AdministratorForm(request.POST)
+            return render(request, self.template_name, self.context)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data, context={"request": request})
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.validated_data["user"]
-            login(request, user)
-            token = Token.objects.get(user=user)
-            self.data['message'] = "Login as admin successful!"
-            self.data['user_id'] = user.id
-            self.data['email'] = user.email
-            self.data['token'] = token.key
-            return Response(self.data, status=status.HTTP_200_OK)
+        register_form = RegisterForm(request.POST)
+        administrator_form = AdministratorForm(request.POST, request.FILES)
+        if register_form.is_valid() and administrator_form.is_valid():
+            username = register_form.cleaned_data.get('username')
+            email = register_form.cleaned_data.get('email')
+            raw_password = register_form.cleaned_data.get('password1')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, "Username already exists. Try another")
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            elif User.objects.filter(email=email).exists():
+                messages.error(request, "Email already exists. Try another")
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                user_save = register_form.save(commit=False)
+                if Administrator.objects.filter(user=user_save).exists():
+                    messages.error(request, "User already has a company admin profile. Try another")
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+                else:
+                    administrator_save = administrator_form.save(commit=False)
+                    administrator_save.user = user_save
+                    administrator_save.is_company_admin = True
+                    user_save.save()
+                    administrator_save.save()
+                messages.success(request, 'Your account is under verification! Will notify soon.')
+                return redirect('admin_login')
+        return render(request, self.template_name, {'register_form': register_form, 'administrator_form': administrator_form})
 
-# LOGOUT
-class LogoutAPI(APIView):
-    # permission_classes = [IsAuthenticated,]
-    data = {}
+class Login(View):
+    template_name = 'account/login.html'
+    context = {}
 
-    def post(self, request):
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, 'You are logged in already!')
+            return redirect('main')
+        else:
+            self.context['login_form'] = LoginForm()
+            return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        authenticate_user = authenticate(username=username, password=password)
+
+        if authenticate_user is not None:
+            if authenticate_user.is_active:
+                login(request, authenticate_user)
+                messages.success(request, f'Welcome { request.user.username }!')
+                return redirect('user_detail', pk=request.user.id)
+            else:
+                messages.info(request, 'Verify your email!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, "Check user's credentials OR verify your email!!")
+            return redirect('login')
+
+class AdminLogin(View):
+    template_name = 'account/admin_login.html'
+    context = {}
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            messages.info(request, 'You are logged in already!')
+            return redirect('main')
+        else:
+            self.context['login_form'] = LoginForm()
+            return render(request, self.template_name, self.context)
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        authenticate_user = authenticate(username=username, password=password)
+
+        if authenticate_user is not None:
+            if authenticate_user.is_active:
+                user = User.objects.get(username=username)
+                try:
+                    if Administrator.objects.get(user=user, verification=True, is_company_admin=True):
+                        login(request, user)
+                        messages.success(request, f'{ request.user.username } Login as "Company Admin!"')
+                        return redirect('dashboard')
+                except Administrator.DoesNotExist:
+                    try:
+                        if Administrator.objects.get(user=user, verification=True, is_park_admin=True):
+                            login(request, user)
+                            messages.success(request, f'{ request.user.username } Login as "Park Admin!"')
+                            return redirect('dashboard')
+                    except Administrator.DoesNotExist:
+                        try:
+                            is_super_admin = User.objects.get(username=user.username, is_superuser=True)
+                            login(request, is_super_admin)
+                            messages.success(request, f'{ request.user.username } Login as "Super Admin!"')
+                            return redirect('dashboard')
+                        except User.DoesNotExist:
+                            if Administrator.objects.filter(user=user).exists():
+                                messages.error(request, "Administrator not verified!")
+                                return redirect('admin_login')
+                            messages.error(request, "Check user's credentials!")
+                            return redirect('admin_login')
+            else:
+                messages.info(request, 'Inactive user!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        else:
+            messages.error(request, "Check user's credentials!")
+            return redirect('login')
+
+class Logout(LoginRequiredMixin, View):
+    login_url = 'login'
+
+    def get(self, request):
         logout(request)
-        self.data["message"] = "Logout successful!"
-        return Response(self.data, status=status.HTTP_200_OK)
-
-# COMPANY ADMIN PROFILE
-class CompanyAdminProfileList(APIView):
-    # Api endpoint for view all CompanyAdminProfile.
-    def get(self, request, format=None):
-        company_admin_profile = CompanyAdminProfile.objects.all()
-        serializer = CompanyAdminProfileSerializer(company_admin_profile, many=True)
-        return Response(serializer.data)
-
-class CompanyAdminProfileDetail(APIView):
-    # Api endpoint for retrieve CompanyAdminProfile instance.
-    def get_object(self, user_id):
-        try:
-            return CompanyAdminProfile.objects.get(admin=user_id)
-        except CompanyAdminProfile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, user_id, format=None):
-        company_admin_profile = self.get_object(user_id)
-        serializer = CompanyAdminProfileSerializer(company_admin_profile)
-        return Response(serializer.data)
-
-class CompanyAdminProfileCreate(APIView):
-    def post(self, request, user_id, format=None):
-        serializer = CompanyAdminProfileSerializer(data=request.data)
-        user = User.objects.get(id=user_id)
-        if CompanyAdminProfile.objects.filter(admin=user).exists():
-            message = {"message": "User already has a company admin profile"}
-            return Response(message)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(admin=user)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class CompanyAdminProfileUpdate(APIView):
-    # Api endpoint for update CompanyAdminProfile instance.
-    def get_object(self, pk):
-        try:
-            return CompanyAdminProfile.objects.get(pk=pk)
-        except CompanyAdminProfile.DoesNotExist:
-            raise Http404
-
-    def put(self, request, pk, format=None):
-        company_admin_profile = self.get_object(pk)
-        serializer = CompanyAdminProfileSerializer(company_admin_profile, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class CompanyAdminProfileDelete(APIView):
-    # Api endpoint for delete CompanyAdminProfile instance.
-    def get_object(self, pk):
-        try:
-            return CompanyAdminProfile.objects.get(pk=pk)
-        except CompanyAdminProfile.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, pk, format=None):
-        company_admin_profile = self.get_object(pk)
-        company_admin_profile.delete()
-        return Response({"message": "Company admin deleted!"}, status=status.HTTP_204_NO_CONTENT)
-
-# PARK ADMIN PROFILE
-class ParkAdminProfileList(APIView):
-    # Api endpoint for view all ParkAdminProfile.
-    def get(self, request, format=None):
-        park_admin_profile = ParkAdminProfile.objects.all()
-        serializer = ParkAdminProfileSerializer(park_admin_profile, many=True)
-        return Response(serializer.data)
-
-class ParkAdminProfileDetail(APIView):
-    # Api endpoint for retrieve ParkAdminProfile instance.
-    def get_object(self, user_id):
-        try:
-            return ParkAdminProfile.objects.get(admin=user_id)
-        except ParkAdminProfile.DoesNotExist:
-            raise Http404
-
-    def get(self, request, user_id, format=None):
-        park_admin_profile = self.get_object(user_id)
-        serializer = ParkAdminProfileSerializer(park_admin_profile)
-        return Response(serializer.data)
-
-class ParkAdminProfileCreate(APIView):
-    def post(self, request, user_id, company_admin, format=None):
-        serializer = ParkAdminProfileSerializer(data=request.data)
-        user = User.objects.get(id=user_id)
-        company_admin_inst = CompanyAdminProfile.objects.get(id=company_admin)
-        if ParkAdminProfile.objects.filter(admin=user).exists():
-            message = {"message": "User already has a park admin profile"}
-            return Response(message)
-
-        if serializer.is_valid(raise_exception=True):
-            serializer.save(admin=user, company_admin=company_admin_inst)
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ParkAdminProfileUpdate(APIView):
-    # Api endpoint for update ParkAdminProfile instance.
-    def get_object(self, pk):
-        try:
-            return ParkAdminProfile.objects.get(pk=pk)
-        except ParkAdminProfile.DoesNotExist:
-            raise Http404
-
-    def put(self, request, pk, format=None):
-        park_admin_profile = self.get_object(pk)
-        serializer = ParkAdminProfileSerializer(park_admin_profile, data=request.data, partial=True)
-        if serializer.is_valid(raise_exception=True):
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class ParkAdminProfileDelete(APIView):
-    # Api endpoint for delete ParkAdminProfile instance.
-    def get_object(self, pk):
-        try:
-            return ParkAdminProfile.objects.get(pk=pk)
-        except ParkAdminProfile.DoesNotExist:
-            raise Http404
-
-    def delete(self, request, pk, format=None):
-        park_admin_profile = self.get_object(pk)
-        park_admin_profile.delete()
-        return Response({"message": "Park admin deleted!"}, status=status.HTTP_204_NO_CONTENT)
+        messages.success(request, 'Successfully logged out!')
+        return redirect('main')

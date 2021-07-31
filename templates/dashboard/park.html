@@ -1,0 +1,144 @@
+{% extends 'layouts/dashboard.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+<meta property="og:description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+<meta itemprop="description" name="description"
+    content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+<meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+<meta property="og:title" content="Dashboard - Park">
+<title>Dashboard - Park</title>
+{% endblock %}
+{% block toplink %}
+<style>
+    #weatherWidget .currentDesc {
+        color: #ffffff !important;
+    }
+
+    .traffic-chart {
+        min-height: 335px;
+    }
+
+    #flotPie1 {
+        height: 150px;
+    }
+
+    #flotPie1 td {
+        padding: 3px;
+    }
+
+    #flotPie1 table {
+        top: 20px !important;
+        right: -10px !important;
+    }
+
+    .chart-container {
+        display: table;
+        min-width: 270px;
+        text-align: left;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #flotLine5 {
+        height: 105px;
+    }
+
+    #flotBarChart {
+        height: 150px;
+    }
+
+    #cellPaiChart {
+        height: 160px;
+    }
+
+    .card-header {
+        background-color: #000 !important;
+        padding: 1.75rem 1.25rem;
+        color: #009A00;
+        font-weight: 300;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+{% include 'navigations/dashboard/left_panel.html' %}
+
+<div id="right-panel" class="right-panel">
+    {% include 'navigations/dashboard/header.html' %}
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="breadcrumbs mt-0">
+                <div class="breadcrumbs-inner">
+                    <div class="row m-0">
+                        <div class="col-sm-4">
+                            <div class="page-header float-left">
+                                <div class="page-title">
+                                    <h1>Parks</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="page-header float-right">
+                                <div class="page-title">
+                                    <div class="breadcrumb text-right">
+                                        <a href="{% url 'dashboard_park_add' %}" type="button"
+                                            class="btn btn-sm btn-dark float-right">Register Park</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="animated fadeIn">
+                    <div class="row">
+                        {% for park in parks %}
+                        <div class="col-md-4">
+                            <a href="{% url 'dashboard_park_detail' pk=park.id %}" class="text-decoration-none text-dark">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <strong class="card-title">
+                                            {{ park.park_name }}
+                                            <small>
+                                                <span class="badge badge-success float-right mt-1">
+                                                    {{ park.park_address|truncatechars:15 }}
+                                                </span>
+                                            </small>
+                                        </strong>
+                                    </div>
+                                    <img class="card-img-bottom" src="{{ park.company.company_logo.url }}" height="200" style="object-fit: cover;"
+                                        alt="Card image cap" />
+                                    <div class="card-body">
+                                        <p class="card-text">
+                                            <span class="card-label text-dark"><b>Park name:</b> </span> {{ park.park_name }} <br />
+                                            <span class="card-label text-dark"><b>Park email:</b> </span> {{ park.park_email }} <br />
+                                            <span class="card-label text-dark"><b>Park number:</b> </span> {{ park.park_number }} <br />
+                                            <span class="card-label text-dark"><b>Park address:</b> </span> {{ park.park_address|truncatechars:15 }} <br />
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+</div>
+{% endblock %}

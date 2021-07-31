@@ -17,5 +17,8 @@ Namecheap Username = Parkwell2021
 Namecheap Password = Parkwell852456
 
 Parkwell superadmin username = parkwelladmin
-Parkwell superadmin email = parkwell2021@gmail.com
-Parkwell superadmin password = 852456
+Parkwell superadmin email = hello@parkwell.africa
+Parkwell superadmin password = 852456poi
+
+mapbox username = Parkwell
+mapbox password = 852456poi
