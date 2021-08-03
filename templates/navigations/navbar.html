@@ -11,23 +11,26 @@
                     </h1>
                     <nav class="nav-menu d-none d-lg-block">
                         <ul>
-                            <li class="active"><a href="#header">Home</a></li>
-                            <li><a href="#about">About</a></li>
-                            <li><a href="#services">Services</a></li>
-                            <li><a href="#contact">Contact</a></li>
+                            <li class="active"><a href="/#header">Home</a></li>
+                            <li><a href="/#about">About</a></li>
+                            <li><a href="/#howitworks">How it works</a></li>
+                            <li><a href="/#contact">Contact</a></li>
                         </ul>
                     </nav>
                     <div>
-                        {% if request.user.is_authenticated %}
-                            {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.administrator.is_park_admin %}
-                                <a href="{% url 'dashboard' %}" class="register-btn d-inline">Dashboard</a>
-                            {% else %}
-                                <a href="{% url 'user_detail' pk=request.user.id %}" class="register-btn d-inline">Account</a>
-                            {% endif %}
-                            <a href="{% url 'logout' %}" class="get-started-btn d-inline">Logout</a>
+                        {% if request.get_full_path == '/waitlist/' %}
                         {% else %}
-                            <a href="{% url 'register' %}" class="register-btn d-inline">Register</a>
-                            <a href="{% url 'login' %}" class="get-started-btn d-inline">Login</a>
+                            {% if request.user.is_authenticated %}
+                                {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.administrator.is_park_admin %}
+                                    <a href="{% url 'dashboard' %}" class="register-btn d-inline">Dashboard</a>
+                                {% else %}
+                                    <a href="{% url 'user_detail' pk=request.user.id %}" class="register-btn d-inline">Account</a>
+                                {% endif %}
+                                <a href="{% url 'logout' %}" class="get-started-btn d-inline">Logout</a>
+                            {% else %}
+                                <a href="{% url 'register' %}" class="register-btn d-inline">Register</a>
+                                <a href="{% url 'login' %}" class="get-started-btn d-inline">Login</a>
+                            {% endif %}
                         {% endif %}
                     </div>
                 </div>

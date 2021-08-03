@@ -24,7 +24,7 @@ class Booking(models.Model):
     def __str__(self):
         return str(self.full_name)
 
-class Listing(models.Model):
+class Waitlist(models.Model):
     full_name = models.CharField(_("Full name"), max_length=255)
     email = models.EmailField(_("Email"), max_length=255)
     mobile_number = models.CharField(_("Mobile number"), validators=[mobile_num_regex], max_length=20)

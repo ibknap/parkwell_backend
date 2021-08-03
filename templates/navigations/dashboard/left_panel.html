@@ -31,9 +31,9 @@
                             <i class="menu-icon fas fa-user-friends"></i>Users info
                         </a>
                     </li>
-                    <li class="menu-item {% if request.get_full_path == '/listing/' %}active{% endif %}">
-                        <a href="{% url 'listing' %}" class="text-decoration-none">
-                            <i class="menu-icon fa fa-list"></i>Listing
+                    <li class="menu-item {% if request.get_full_path == '/waitlist/' %}active{% endif %}">
+                        <a href="{% url 'dashboard_waitlist' %}" class="text-decoration-none">
+                            <i class="menu-icon fa fa-list"></i>Waitlist
                         </a>
                     </li>
                     <li class="menu-item {% if request.get_full_path == '/dashboard/bookings/' %}active{% endif %}">

@@ -1,10 +1,10 @@
 from django.core.serializers.json import DjangoJSONEncoder
 from account.forms import AdministratorForm, RegisterForm, UpdateFirstNameForm, UpdateLastNameForm
-from main.forms import ContactUsForm, ListingForm
+from main.forms import ContactUsForm, WaitlistForm
 from django.contrib.auth.models import User
 from account.models import Administrator
 from company.forms import CompanyForm
-from .models import Booking, Listing
+from .models import Booking, Waitlist
 from company.models import Company
 from park.forms import ParkForm
 from park.models import Park
@@ -25,7 +25,7 @@ def global_context(request):
     context['cadmins'] = Administrator.objects.filter(is_company_admin=True).order_by("-id")
     context['padmins'] = Administrator.objects.filter(is_park_admin=True).order_by("-id")
     context['companies'] = Company.objects.order_by("-id")
-    context['listings'] = Listing.objects.order_by("-id")
+    context['waitlists'] = Waitlist.objects.order_by("-id")
 
     context['parks_list'] =  json.dumps(list(Park.objects.order_by("-id").values()), cls=DjangoJSONEncoder)
     context['company_list'] = json.dumps(list(Company.objects.order_by("-id").values()), cls=DjangoJSONEncoder)
@@ -35,7 +35,7 @@ def global_context(request):
     context["administrator_form"] = AdministratorForm()
     context["register_form"] = RegisterForm()
     context["park_form"] = ParkForm()
-    context['listing_form'] = ListingForm()
+    context['waitlist_form'] = WaitlistForm()
     context['update_first_name_form'] = UpdateFirstNameForm()
     context['update_last_name_form'] = UpdateLastNameForm()
     return context

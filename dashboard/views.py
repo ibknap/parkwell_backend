@@ -284,3 +284,9 @@ class VerifyAdmin(LoginRequiredMixin, View):
         admin.save()
         messages.success(request, 'Company Admin verified!')
         return redirect('dashboard_cadmin')
+
+class DashboardWaitlist(View):
+    template_name='dashboard/waitlist.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)

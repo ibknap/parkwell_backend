@@ -123,8 +123,13 @@
         <div class="container-fluid" data-aos="zoom-out" data-aos-delay="100">
             <div class="row justify-content-center">
                 <div class="col-xl-10">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-8 mx-auto search-box">
+                    <div class="row justify-content-center">
+                        <div class="col-12 text-center">
+                            <a href="{% url 'waitlist' %}" class="register-btn" style="margin-left: 0 !important;">Join Our Waitlist</a>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6 search-box text-center">
                             <form>
                                 <div id="geocoderSearchBarHome" class="search-ui"></div>
                             </form>
@@ -157,7 +162,7 @@
                         <div class="content">
                             <h3>A traffic management solution</h3>
                             <p>
-                                Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution.
+                                Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and air pollution.
                             </p>
                             <a href="#!" class="about-btn"><span>About us</span> <i
                                     class="bx bx-chevron-right"></i></a>
@@ -217,7 +222,7 @@
             </div>
         </section> -->
 
-        <section id="services" class="services section-bg">
+        <section id="howitworks" class="services section-bg">
             <div class="container" data-aos="fade-up">
                 <div class="section-title">
                     <h2>How it <span style="color: #fcfc04;">Works</span></h2>
@@ -235,16 +240,40 @@
                         <div class="icon-box" data-aos="fade-up" data-aos-delay="500">
                             <img src="{% static 'images/navigate.svg' %}" alt="navigate">
                             <span class="text-white h4 ml-2">Navigate</span>
-                            <p style="line-height: 2;">Drive to your destination using the in-app map.</p>
+                            <p style="line-height: 2;">Drive to your navigation using your preferred map.</p>
                         </div>
                     </div>
                     <div class="col-sm-4 mt-4 mt-md-0">
                         <div class="icon-box" data-aos="fade-up" data-aos-delay="600">
                             <img src="{% static 'images/park.svg' %}" alt="park">
                             <span class="text-white h4 ml-2">Park</span>
-                            <p style="line-height: 2;">Just arrive at your destination and Parkwell.</p>
+                            <p style="line-height: 2;">Arrive at your destination and Parkwell.</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="counts" class="counts">
+            <div class="container" data-aos="fade-up">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="count-box">
+                            <i class="icofont-list"></i>
+                            <span style="font-size: 30px !important;">Get notified when we go live</span>
+                            <p>
+                                <a href="{% url 'waitlist' %}" class="register-btn">Join Our Waitlist</a>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- <div class="col-sm-12">
+                        <div class="info-box mt-4">
+                            <p>
+                                <a href="{% url 'waitlist' %}" class="register-btn">Join Our Waitlist</a>
+                            </p>
+                        </div>
+                    </div> -->
                 </div>
             </div>
         </section>
@@ -259,12 +288,6 @@
                 <div class="row" data-aos="fade-up" data-aos-delay="100">
                     <div class="col-lg-6">
                         <div class="row">
-                            <div class="col-md-12">
-                                <div class="info-box">
-                                    <i class="bx bx-map"></i>
-                                    <h3>Our Address</h3>
-                                </div>
-                            </div>
                             <div class="col-md-6">
                                 <div class="info-box mt-4">
                                     <i class="bx bx-envelope"></i>
@@ -281,11 +304,6 @@
                                     <p>
                                         <a href="tel:022919400">02-2919400</a>
                                     </p>
-                                </div>
-                            </div>
-                            <div class="col-sm-12">
-                                <div class="info-box mt-4">
-                                    <a type="button" class="register-btn d-inline" data-toggle="modal" data-target="#listingmodal">Signup for listing</a>
                                 </div>
                             </div>
                         </div>
@@ -327,41 +345,6 @@
                 </div>
             </div>
         </section>
-
-        <div class="modal fade" id="listingmodal" tabindex="-1" role="dialog"
-            aria-labelledby="listingmodalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-md" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="listingmodalLabel">
-                            <b class="text-center">Listing Form</b>
-                        </h5>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <form action="{% url 'listing' %}" method="POST" role="form" class="php-email-form">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        {% for field in listing_form %}
-                                            <div class="col form-group">
-                                                {{ field|add_class:'form-control'}}
-                                                {% for error in field.errors %}
-                                                    <i class="text-danger">{{ error }}</i>
-                                                {% endfor %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="text-center">
-                                        <button type="submit">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </main>
 {% endblock %}
 

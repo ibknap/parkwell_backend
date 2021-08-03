@@ -16,6 +16,7 @@ urlpatterns = [
     path('park_delete/<int:pk>/', views.DashboardParkDelete.as_view(), name='dashboard_park_delete'),
 
     path('check_email/<email>/', views.DashboardCheckEmail.as_view(), name='dashboard_check_email'),
+    path('waitlist/', views.DashboardWaitlist.as_view(), name="dashboard_waitlist"),
 
     path('cadmin/', views.DashboardCompanyAdmin.as_view(), name='dashboard_cadmin'),
     path('cadmin/verify_admin/<int:pk>/', views.VerifyAdmin.as_view(), name='dashboard_verify_admin'),

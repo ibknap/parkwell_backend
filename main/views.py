@@ -1,5 +1,5 @@
 from django.http.response import Http404, HttpResponseRedirect
-from main.forms import BookingForm, ContactUsForm, ListingForm
+from main.forms import BookingForm, ContactUsForm, WaitlistForm
 from django.views.generic import TemplateView, DetailView
 from django.core.mail import send_mail, BadHeaderError
 from parkwell_backend.settings import EMAIL_HOST_USER
@@ -20,17 +20,17 @@ import socket
 class Main(TemplateView):
     template_name = "main/main.html"
     
-class Listing(View):
-    template_name='dashboard/listing.html'
+class Waitlist(View):
+    template_name='main/waitlist.html'
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
             
     def post(self, request, *args, **kwargs):
-        listing_form = ListingForm(request.POST)
+        listing_form = WaitlistForm(request.POST)
         if listing_form.is_valid():
             listing_form.save()
-            messages.success(request, 'You have been add to listing!')
+            messages.success(request, 'You have been add to waitlist!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class Booking(View):

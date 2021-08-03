@@ -1,13 +1,12 @@
-from django.db import models
-from .models import Booking, Listing
+from .models import Booking, Waitlist
 from django import forms
 
-class ListingForm(forms.ModelForm):
+class WaitlistForm(forms.ModelForm):
     class Meta:
-        model = Listing
+        model = Waitlist
         exclude = ('created_on', )
     def __init__(self, *args, **kwargs):
-        super(ListingForm, self).__init__(*args, **kwargs)
+        super(WaitlistForm, self).__init__(*args, **kwargs)
         self.fields['full_name'].widget = forms.TextInput(attrs={'placeholder': 'Your Full Name',})
         self.fields['email'].widget = forms.TextInput(attrs={"placeholder": "Your Email"})
         self.fields['mobile_number'].widget = forms.TextInput(attrs={'placeholder': 'Mobile Number',})

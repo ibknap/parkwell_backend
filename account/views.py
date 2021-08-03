@@ -58,12 +58,21 @@ class Register(View):
             context = {}
             email = register_form.cleaned_data.get('email')
             username = register_form.cleaned_data.get('username')
+
+            if User.objects.filter(username=username).exists():
+                messages.success(request, 'Username already exist!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+            if User.objects.filter(email=email).exists():
+                messages.success(request, 'Email already exist!')
+                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
             register_save = register_form.save(commit=False)
             register_save.is_active = False
             register_save.save()
             current_site = get_current_site(request)
             subject = 'Parkwell Activation.'
-
+                
             to_email = email
             context['domain'] = current_site.domain
             context['uid'] = urlsafe_base64_encode(force_bytes(register_save.pk))
@@ -173,7 +182,7 @@ class Login(View):
             if authenticate_user.is_active:
                 login(request, authenticate_user)
                 messages.success(request, f'Welcome { request.user.username }!')
-                return redirect('user_detail', pk=request.user.id)
+                return redirect('main')
             else:
                 messages.info(request, 'Verify your email!')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
