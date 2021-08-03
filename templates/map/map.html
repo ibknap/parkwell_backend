@@ -4,54 +4,40 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <!-- sidebar -->
-    <div class='sidebar'>
-        <div class='heading'>
-            <h1>Parks near location</h1>
-            <div class="geocoderSearchBar" class="geocoder-search-bar mb-2"></div>
-        </div>
-        <div id='listings' class='listings lg-listing'></div>
-    </div>
+    {% include 'navigations/map-navbar.html' %}
 
-    <!-- map -->
-    <div id="map" class="map"></div>
-
-    <!-- mobile sidebar -->
-    <button id="mobileParkCardTrigger"><i class="fas fa-2x fa-list"></i></button>
-    <div class="mobile-park-card up" style="z-index: 2 !important;">
+    <div>
+        <!-- sidebar -->
         <div class='sidebar'>
             <div class='heading'>
-                <h1>Parks near location</h1>
+                <h1>Parks near your location</h1>
             </div>
-            <div id='listingSmall' class='listings'></div>
+            <div id='listings' class='listings lg-listing'></div>
         </div>
-    </div>
-    
-    <button data-toggle="modal" data-target="#exampleModal" class="search-btn-small d-md-none">
-        <i class="fa fa-2x fa-search"></i>
-    </button>
 
-    <div class="modal fade d-md-none" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header text-white" style="background-color: #000;">
-                    <h6 class="modal-title" id="exampleModalLabel">Destination</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+        <!-- map -->
+        <div id="map" class="map">
+        <div id="geocoderSearchBar" class="geocoder-search-bar mb-2"></div>
+        </div>
+
+        <!-- mobile sidebar -->
+        <button id="mobileParkCardTrigger"><i class="fas fa-lg fa-arrow-up mr-3 up-arrow"></i> View parks around your location</button>
+
+        <div class="mobile-park-card up" style="z-index: 2 !important;">
+            <div class='sidebar'>
+                <div class='heading'>
+                    <h1>Parks near your location</h1>
                 </div>
-                <div class="modal-body" style="background-color: #009a00;">
-                    <div class="geocoderSearchBarSmall" class="geocoder-search-bar mb-2"></div>
-                </div>
+                <div id='listingSmall' class='listings'></div>
             </div>
         </div>
     </div>
-
 {% endblock %}
 
 {% block JSscript %}
     <script>
         var company = {{ company_list|safe}};
         var parks = {{ parks_list|safe}};
+        var search = '{{ search }}';
     </script>
 {% endblock %}

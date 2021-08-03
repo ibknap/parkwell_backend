@@ -1,0 +1,73 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+    <meta property="og:description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+    <meta itemprop="description" name="description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution." />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+    <meta property="og:title" content="Account">
+    <title>Account</title>
+{% endblock %}
+{% block toplink %}
+    <style>
+        
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% include 'navigations/map-navbar.html' %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12 text-center">
+                <h2>{{ request.user.username|capfirst }}'s <small class="header-small">account</small></h2>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-6 text-center">
+                <b>USERNAME:</b> {{ request.user.username }} <br /><br /> 
+                <b>EMAIL:</b> {{ request.user.email }} <br /><br />
+                <b>FIRSTNAME:</b> {% if user.first_name %}{{ user.first_name|capfirst }}{% else %}Not given{% endif %} <br /><br />
+                <b>LASTNAME:</b> {% if user.last_name %}{{ user.last_name|capfirst }}{% else %}Not given{% endif %} <br /><br />
+                <b>LAST LOGIN:</b> {% if user.last_login == None %}Never{% else %}{{ user.last_login|naturaltime }}{% endif %} <br /><br />
+                <b>JOINED ON:</b> {{ user.date_joined|naturaltime }} <br /><br />
+            </div>
+            <div class="col-sm-6 text-center">
+                <form action="{% url 'update_first_name' %}" method="POST" class="php-email-form">
+                    {% csrf_token %}
+                    {% for field in update_first_name_form %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                {{ field|add_class:'form-control'}}
+                                {% for error in field.errors %}
+                                    <i class="text-danger">{{ error }}</i>
+                                {% endfor %}
+                            </div>
+                            <button class="register-btn col-sm-2">update</button>
+                        </div>
+                    {% endfor %}
+                </form>
+                <form action="{% url 'update_last_name' %}" method="POST" class="php-email-form">
+                    {% csrf_token %}
+                    {% for field in update_last_name_form %}
+                        <div class="row">
+                            <div class="col-sm-8">
+                                {{ field|add_class:'form-control'}}
+                                {% for error in field.errors %}
+                                    <i class="text-danger">{{ error }}</i>
+                                {% endfor %}
+                            </div>
+                            <button class="register-btn col-sm-2">update</button>
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

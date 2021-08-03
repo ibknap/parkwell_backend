@@ -15,6 +15,9 @@
     <title>Parkwell Africa</title>
 {% endblock %}
 {% block toplink %}
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css' rel='stylesheet' />
     <style>
         #hero .search-box {
             font-size: 15px;
@@ -29,11 +32,11 @@
         
         #hero .search-box form {
             margin-top: 30px;
-            background: #fff;
-            padding: 5px 10px;
-            position: relative;
-            border-radius: 4px;
-            text-align: left;
+        }
+        
+        #hero .search-box input {
+            height: 4em;
+            outline: none;
         }
         
         #hero .search-box form input[type="email"] {
@@ -45,6 +48,8 @@
         #hero .search-box form input[type="text"] {
             border: 0;
             padding: 4px 8px;
+            text-align: center;
+            font-size: 1.1rem;
             width: calc(100% - 100px);
         }
         
@@ -91,35 +96,38 @@
             text-decoration: none;
         }
 
-        .map-btn {
-            margin-top: 25px;
-            background: #009A00;
-            color: #fff;
-            border-radius: 20px 20px 20px 0;
-            padding: 10px 35px;
-            white-space: nowrap;
-            transition: 0.3s;
-            font-size: 20px;
-            font-weight: 600;
-            display: inline-block;
+        .mapboxgl-ctrl-geocoder--icon-search {
+            display: none !important;
+        }
+        
+        .mapboxgl-ctrl-geocoder {
+            width: 100% !important;
+            font-size: 0 !important;
+            max-width: 100% !important;
+            text-align: center !important;
         }
 
-        .map-btn:hover {
-            background: #000;
-            color: #009A00;
-        }
     </style>
 {% endblock %}
 
 {% block content %}
+    <script
+    src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+    href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css"
+    type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+
     <section id="hero" class="d-flex align-items-center">
         <div class="container-fluid" data-aos="zoom-out" data-aos-delay="100">
             <div class="row justify-content-center">
                 <div class="col-xl-10">
                     <div class="row">
-                        <div class="col-lg-6 col-md-8 mx-auto text-center">
-                            <h1 class="text-center">Find a Spot</h1>
-                            <a href="{% url 'map' %}" class="map-btn ml-0">On Map</a>
+                        <div class="col-lg-6 col-md-8 mx-auto search-box">
+                            <form>
+                                <div id="geocoderSearchBarHome" class="search-ui"></div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -133,9 +141,9 @@
                 <div class="row justify-content-center">
                     <div class="col-xl-10">
                         <div class="owl-carousel clients-carousel">
-                            <img src="{% static 'images/icons/benz.svg' %}" height="25" alt="company logo" />
-                            <img src="{% static 'images/icons/lexus_logo.png' %}" width="40" alt="company logo" />
-                            <img src="{% static 'images/icons/honda.svg' %}" width="40" alt="company logo" />
+                            <img src="{% static 'images/logo2.png' %}" alt="company logo" />
+                            <img src="{% static 'images/logo2.png' %}" alt="company logo" />
+                            <img src="{% static 'images/logo2.png' %}" alt="company logo" />
                         </div>
                     </div>
                 </div>
@@ -179,7 +187,7 @@
             </div>
         </section>
 
-        <section id="counts" class="counts">
+        <!-- <section id="counts" class="counts">
             <div class="container" data-aos="fade-up">
                 <div class="row">
                     <div class="col-md-4 mt-5 mt-md-0">
@@ -207,7 +215,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <section id="services" class="services section-bg">
             <div class="container" data-aos="fade-up">
@@ -275,6 +283,11 @@
                                     </p>
                                 </div>
                             </div>
+                            <div class="col-sm-12">
+                                <div class="info-box mt-4">
+                                    <a type="button" class="register-btn d-inline" data-toggle="modal" data-target="#listingmodal">Signup for listing</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -314,5 +327,44 @@
                 </div>
             </div>
         </section>
+
+        <div class="modal fade" id="listingmodal" tabindex="-1" role="dialog"
+            aria-labelledby="listingmodalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="listingmodalLabel">
+                            <b class="text-center">Listing Form</b>
+                        </h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <form action="{% url 'listing' %}" method="POST" role="form" class="php-email-form">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        {% for field in listing_form %}
+                                            <div class="col form-group">
+                                                {{ field|add_class:'form-control'}}
+                                                {% for error in field.errors %}
+                                                    <i class="text-danger">{{ error }}</i>
+                                                {% endfor %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="text-center">
+                                        <button type="submit">Submit</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
+{% endblock %}
+
+{% block JSscript %}
+    <script src="{% static 'js/search.js' %}"></script>
 {% endblock %}

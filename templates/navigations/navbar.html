@@ -1,6 +1,6 @@
 {% load static %}
 
-{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
+{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'account' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
 {% else %}
     <header id="header" class="fixed-top">
         <div class="container-fluid">
@@ -21,6 +21,8 @@
                         {% if request.user.is_authenticated %}
                             {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.administrator.is_park_admin %}
                                 <a href="{% url 'dashboard' %}" class="register-btn d-inline">Dashboard</a>
+                            {% else %}
+                                <a href="{% url 'user_detail' pk=request.user.id %}" class="register-btn d-inline">Account</a>
                             {% endif %}
                             <a href="{% url 'logout' %}" class="get-started-btn d-inline">Logout</a>
                         {% else %}

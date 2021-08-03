@@ -1,0 +1,19 @@
+{% load static %}
+
+<header id="header">
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 d-flex align-items-center">
+                <h1 class="logo mr-auto">
+                    <a class="navbar-brand" href="{% url 'main' %}"><img src="{% static 'images/logo2.png' %}" height="40" alt="logo" /></a>
+                </h1>
+                <div>
+                    {% if request.user.is_authenticated %}
+                        <a href="{% url 'main' %}" class="register-btn d-inline">Home</a>
+                        <a href="{% url 'logout' %}" class="get-started-btn d-inline">Logout</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</header>

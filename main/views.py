@@ -1,5 +1,5 @@
 from django.http.response import Http404, HttpResponseRedirect
-from main.forms import BookingForm, ContactUsForm, NotifyForm
+from main.forms import BookingForm, ContactUsForm, ListingForm
 from django.views.generic import TemplateView, DetailView
 from django.core.mail import send_mail, BadHeaderError
 from parkwell_backend.settings import EMAIL_HOST_USER
@@ -20,36 +20,18 @@ import socket
 class Main(TemplateView):
     template_name = "main/main.html"
     
-class Notify(View):
-    def post(self, request, *args, **kwargs):
-        notify_form = NotifyForm(request.POST)
-        if notify_form.is_valid():
-            context = {}
-            subject = 'Live Notification'
-            name = notify_form.cleaned_data.get('name')
-            from_email = notify_form.cleaned_data.get('email')
+class Listing(View):
+    template_name='dashboard/listing.html'
 
-            context['subject'] = 'Live Notification'
-            context['name'] = notify_form.cleaned_data.get('name')
-            context['from_email'] = notify_form.cleaned_data.get('email')
-            context['message'] = "Live Notification Listing!!!"
-            actual_message = loader.render_to_string('emails/message.html', context)
-            try:
-                send_mail(subject, actual_message, from_email, [EMAIL_HOST_USER,], fail_silently=False, html_message=actual_message)
-                messages.success(request, 'Notification for "Live Launch" successfully sent')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            except socket.gaierror:
-                messages.error(request, 'No internet connect! check your network.')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            except HeaderParseError:
-                messages.error(request, 'A user has an invalid email domain')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            except BadHeaderError:
-                messages.error(request, 'Bad header')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-            except TimeoutError:
-                messages.error(request, 'Time out')
-                return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+            
+    def post(self, request, *args, **kwargs):
+        listing_form = ListingForm(request.POST)
+        if listing_form.is_valid():
+            listing_form.save()
+            messages.success(request, 'You have been add to listing!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class Booking(View):
     template_name='booking/detail.html'

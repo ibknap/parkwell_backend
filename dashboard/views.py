@@ -1,3 +1,4 @@
+from django.views.generic.base import TemplateView
 from park.forms import ParkForm
 from account.models import Administrator
 from django.contrib.auth.models import User
@@ -182,8 +183,6 @@ class DashboardBookings(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
-
-
 class DashboardPark(LoginRequiredMixin, View):
     login_url = 'admin_login'
     template_name = "dashboard/park.html"
@@ -262,3 +261,26 @@ class DashboardParkDelete(LoginRequiredMixin, View):
         park.delete()
         messages.success(request, 'Park deleted!')
         return redirect('dashboard_park')
+
+class DashboardUsersInfo(LoginRequiredMixin, TemplateView):
+    login_url = 'admin_login'
+    template_name='dashboard/users_info.html'
+
+class DashboardUsersInfoDelete(LoginRequiredMixin, View):
+    login_url = 'admin_login'
+
+    def get(self, request, pk, *args, **kwargs):
+        user = User.objects.get(id=pk)
+        user.delete()
+        messages.success(request, 'User deleted!')
+        return redirect('dashboard_users_info')
+
+class VerifyAdmin(LoginRequiredMixin, View):
+    login_url = 'admin_login'
+
+    def get(self, request, pk, *args, **kwargs):
+        admin = Administrator.objects.get(id=pk)
+        admin.verification = True
+        admin.save()
+        messages.success(request, 'Company Admin verified!')
+        return redirect('dashboard_cadmin')

@@ -34,9 +34,6 @@ for (let partItem = 0; partItem < parks.length; partItem++) {
     };
     park_listing.push(element)
 }
-// for (parkCoord in park_listing) {
-//     console.log(park_listing[parkCoord].geometry.coordinates)
-// }
 
 document.addEventListener('DOMContentLoaded', function () {
     if (navigator.geolocation) {
@@ -49,15 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 14,
             });
             map.addControl(new mapboxgl.NavigationControl());
-            map.addControl(
-                new mapboxgl.GeolocateControl({
-                    positionOptions: {
-                        enableHighAccuracy: true
-                    },
-                    trackUserLocation: true
-                })
-            );
-            var direction = new MapboxDirections({ accessToken: mapboxgl.accessToken })
+            var direction = new MapboxDirections({ accessToken: mapboxgl.accessToken, controls: { inputs: false, instructions: false } })
             map.addControl(direction, 'top-left');
             var from_location = [position.coords.longitude, position.coords.latitude]
             var geocoder = new MapboxGeocoder({
@@ -65,14 +54,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 mapboxgl: mapboxgl
             });
 
-            mapSearchs = document.getElementsByClassName('geocoderSearchBar');
-            for (let mapSearch = 0; mapSearch < mapSearchs.length; mapSearch++) {
-                mapSearchs[mapSearch].appendChild(geocoder.onAdd(map));
+            document.getElementById('geocoderSearchBar').appendChild(geocoder.onAdd(map));
+
+            if (search) {
+                geocoder.setInput(search)._geocode(search);
             }
-            // document.getElementById('geocoderSearchBarSmall').appendChild(geocoder.onAdd(map));
-            // geocoder.on('result', e => {
-            //     console.log(e.result)
-            // })
 
             map.on('load', function (e) {
                 map.addSource('places', {
@@ -91,17 +77,17 @@ document.addEventListener('DOMContentLoaded', function () {
                     "type": "circle",
                     "source": "places",
                     "paint": {
-                      "circle-radius": {
-                        stops: [
-                          [0, 0],
-                          [14, 1000]
-                        ],
-                        base: 2
-                      },
-                      "circle-color": "#009a00",
-                      "circle-opacity": 0.2,
+                        "circle-radius": {
+                            stops: [
+                                [0, 0],
+                                [14, 1000]
+                            ],
+                            base: 2
+                        },
+                        "circle-color": "#009a00",
+                        "circle-opacity": 0.2,
                     }
-                  });
+                });
             });
 
             map.on('click', function (e) {
@@ -272,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <i class="fa fa-lg fa-route"></i> ${distance.toFixed(2)} K/m <br/>
                             <div style="background-color: #000;">
                                 <!-- <a href="/booking/create/${currentFeature.properties.id}/" class="book-btn">book</a> <br/> -->
-                                <button class="navigate-btn" onclick='parkCoordinates(${currentFeature.geometry.lon}, ${currentFeature.geometry.lat})'>navigate</button> <br/>
+                                <button class="navigate-btn" onclick='parkCoordinates(${currentFeature.geometry.lon}, ${currentFeature.geometry.lat})'>Get direction</button> <br/>
                             </div>
                         </p>`)
                     .addTo(map);

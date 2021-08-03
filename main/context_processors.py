@@ -1,13 +1,13 @@
 from django.core.serializers.json import DjangoJSONEncoder
-from account.forms import AdministratorForm, RegisterForm
+from account.forms import AdministratorForm, RegisterForm, UpdateFirstNameForm, UpdateLastNameForm
+from main.forms import ContactUsForm, ListingForm
 from django.contrib.auth.models import User
 from account.models import Administrator
 from company.forms import CompanyForm
-from main.forms import ContactUsForm
+from .models import Booking, Listing
 from company.models import Company
 from park.forms import ParkForm
 from park.models import Park
-from .models import Booking
 import json
 
 def global_context(request):
@@ -25,6 +25,7 @@ def global_context(request):
     context['cadmins'] = Administrator.objects.filter(is_company_admin=True).order_by("-id")
     context['padmins'] = Administrator.objects.filter(is_park_admin=True).order_by("-id")
     context['companies'] = Company.objects.order_by("-id")
+    context['listings'] = Listing.objects.order_by("-id")
 
     context['parks_list'] =  json.dumps(list(Park.objects.order_by("-id").values()), cls=DjangoJSONEncoder)
     context['company_list'] = json.dumps(list(Company.objects.order_by("-id").values()), cls=DjangoJSONEncoder)
@@ -34,4 +35,7 @@ def global_context(request):
     context["administrator_form"] = AdministratorForm()
     context["register_form"] = RegisterForm()
     context["park_form"] = ParkForm()
+    context['listing_form'] = ListingForm()
+    context['update_first_name_form'] = UpdateFirstNameForm()
+    context['update_last_name_form'] = UpdateLastNameForm()
     return context

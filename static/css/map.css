@@ -16,21 +16,20 @@ html,body {
 }
      
 .sidebar {
-    position: absolute;
     width: 30%;
-    height: 100%;
+    height: 100vh;
     top: 0;
     left: 0;
     overflow: hidden;
-    border-right: 1px solid rgba(0, 0, 0, 0.25);
 }
      
 .map {
     position: absolute;
-    left: 30%;
+    right: 0;
     width: 70%;
-    top: 0;
+    top: 8%;
     bottom: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.25);
 }
      
 h1 {
@@ -89,22 +88,27 @@ a:hover {
 .listings .item .title small {
     font-weight: 400;
 }
-    .listings .item.active .title,
+
+.listings .item.active .title,
 .listings .item .title:hover {
     color: #009A00;
 }
+
 .listings .item.active {
     background-color: #f8f8f8;
 }
+
 ::-webkit-scrollbar {
     width: 3px;
     height: 3px;
     border-left: 0;
     background: rgba(0, 0, 0, 0.1);
 }
+
 ::-webkit-scrollbar-track {
     background: none;
 }
+
 ::-webkit-scrollbar-thumb {
     background: #009A00;
     border-radius: 0;
@@ -124,6 +128,7 @@ a:hover {
 .clearfix {
     display: block;
 }
+
 .clearfix:after {
     content: '.';
     display: block;
@@ -140,14 +145,17 @@ a:hover {
 .mapboxgl-popup-close-button {
     display: none;
 }
+
 .mapboxgl-popup-content {
     padding: 0;
     border-radius: 10px 10px 10px 0;
     width: 200px;
 }
+
 .mapboxgl-popup-content-wrapper {
     padding: 1%;
 }
+
 .mapboxgl-popup-content h5 {
     background: #000;
     color: #009A00;
@@ -264,10 +272,20 @@ a:hover {
     background-color: #fff;
     border: none;
     border-top: 2px solid #000;
-    border-radius: 20px 20px 0 0;
     line-height: 0;
+    font-weight: 300;
+    font-size: 20px;
+    z-index: 2;
 }
 
+.up-arrow {
+    animation: bounce-up .89s infinite linear;
+}
+
+@keyframes bounce-up {
+    0% {transform: translateY(5px);}
+    100% {transform: translateY(-5px);}
+}
 .mobile-park-card {
     display: none;
     position: absolute;
@@ -341,8 +359,9 @@ a:hover {
 }
 
 .geocoder-search-bar {
-    position: relative;
-    width: 100%;
+    position: absolute;
+    width: 50%;
+    top: 1%;
 }
 
 .mapboxgl-ctrl-geocoder {
@@ -386,4 +405,74 @@ a:hover {
     font-weight: 600;
     display: inline-block;
     text-decoration: none;
+}
+
+#header {
+    background: #000;
+    transition: all 0.5s;
+    z-index: 997;
+    padding: 5px 0;
+}
+
+#header.header-scrolled {
+    padding: 12px 0;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+#header .logo {
+    font-size: 32px;
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    font-weight: 600;
+}
+
+#header .logo a {
+    color: #111111;
+}
+
+#header .logo a span {
+    color: #009A00;
+}
+
+#header .logo img {
+    max-height: 40px;
+}
+
+@media (max-width: 992px) {
+    #header .logo {
+        font-size: 28px;
+    }
+}
+
+.register-btn {
+    margin-left: 25px;
+    background: #fff;
+    color: #009A00;
+    border: 2px solid #009A00;
+    border-radius: 4px;
+    padding: 8px 25px;
+    white-space: nowrap;
+    transition: 0.3s;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.get-started-btn {
+    margin-left: 5px;
+    background: #009A00;
+    color: #fff;
+    border-radius: 4px;
+    white-space: nowrap;
+    transition: 0.3s;
+    font-size: 14px;
+    padding: 5px 10px;
+}
+
+.register-btn:hover, .get-started-btn:hover {
+    background: #000;
+    color: #fff;
+    text-decoration: none;
+    border: 2px solid #009A00;
 }

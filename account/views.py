@@ -1,5 +1,5 @@
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from account.forms import AdministratorForm, LoginForm, RegisterForm
+from account.forms import AdministratorForm, LoginForm, RegisterForm, UpdateFirstNameForm, UpdateLastNameForm
 from .email_verification_token import email_activation_token
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate, login, logout
@@ -238,3 +238,31 @@ class Logout(LoginRequiredMixin, View):
         logout(request)
         messages.success(request, 'Successfully logged out!')
         return redirect('main')
+
+class UpdateFirstName(LoginRequiredMixin, View):
+    template_name = "account/user_detail.html"
+    login_url = 'user_login'
+
+    def post(self, request, *args, **kwargs):
+        form = UpdateFirstNameForm(request.POST)
+        if form.is_valid():
+            change_first_name = form.cleaned_data.get('first_name')
+            first_name = User.objects.get(username=request.user)
+            first_name.first_name = change_first_name
+            first_name.save()
+            messages.success(request, "First name Updated!")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class UpdateLastName(LoginRequiredMixin, View):
+    template_name = "account/user_detail.html"
+    login_url = 'user_login'
+
+    def post(self, request, *args, **kwargs):
+        form = UpdateLastNameForm(request.POST)
+        if form.is_valid():
+            change_last_name = form.cleaned_data.get('last_name')
+            last_name = User.objects.get(username=request.user)
+            last_name.last_name = change_last_name
+            last_name.save()
+            messages.success(request, "Last name Updated!")
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))

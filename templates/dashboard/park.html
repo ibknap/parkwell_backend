@@ -75,70 +75,113 @@
 <div id="right-panel" class="right-panel">
     {% include 'navigations/dashboard/header.html' %}
 
-    <div class="content">
-        <div class="animated fadeIn">
-            <div class="breadcrumbs mt-0">
-                <div class="breadcrumbs-inner">
-                    <div class="row m-0">
-                        <div class="col-sm-4">
-                            <div class="page-header float-left">
-                                <div class="page-title">
-                                    <h1>Parks</h1>
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="breadcrumbs mt-0">
+                    <div class="breadcrumbs-inner">
+                        <div class="row m-0">
+                            <div class="col-sm-4">
+                                <div class="page-header float-left">
+                                    <div class="page-title">
+                                        <h1>Parks</h1>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-8">
-                            <div class="page-header float-right">
-                                <div class="page-title">
-                                    <div class="breadcrumb text-right">
-                                        <a href="{% url 'dashboard_park_add' %}" type="button"
-                                            class="btn btn-sm btn-dark float-right">Register Park</a>
+                            <div class="col-sm-8">
+                                <div class="page-header float-right">
+                                    <div class="page-title">
+                                        <div class="breadcrumb text-right">
+                                            <a href="https://www.google.com/maps/" target="_blank" class="btn btn-sm btn-orange float-right">Get Latitude and Longitude</a>
+                                            <a href="{% url 'dashboard_park_add' %}" type="button"
+                                                class="btn btn-sm btn-dark float-right">Register Park</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="content">
-                <div class="animated fadeIn">
-                    <div class="row">
-                        {% for park in parks %}
-                        <div class="col-md-4">
-                            <a href="{% url 'dashboard_park_detail' pk=park.id %}" class="text-decoration-none text-dark">
-                                <div class="card">
-                                    <div class="card-header">
-                                        <strong class="card-title">
-                                            {{ park.park_name }}
-                                            <small>
-                                                <span class="badge badge-success float-right mt-1">
-                                                    {{ park.park_address|truncatechars:15 }}
-                                                </span>
-                                            </small>
-                                        </strong>
+                {% if request.user.is_superadmin %}
+                    <div class="content">
+                        <div class="animated fadeIn">
+                            <div class="row">
+                                {% for park in parks %}
+                                    <div class="col-md-4">
+                                        <a href="{% url 'dashboard_park_detail' pk=park.id %}" class="text-decoration-none text-dark">
+                                            <div class="card">
+                                                <div class="card-header">
+                                                    <strong class="card-title">
+                                                        {{ park.park_name }}
+                                                        <small>
+                                                            <span class="badge badge-success float-right mt-1">
+                                                                {{ park.park_address|truncatechars:15 }}
+                                                            </span>
+                                                        </small>
+                                                    </strong>
+                                                </div>
+                                                <img class="card-img-bottom" src="{{ park.company.company_logo.url }}" height="200" style="object-fit: cover;"
+                                                    alt="Card image cap" />
+                                                <div class="card-body">
+                                                    <p class="card-text">
+                                                        <span class="card-label text-dark"><b>Park name:</b> </span> {{ park.park_name }} <br />
+                                                        <span class="card-label text-dark"><b>Park email:</b> </span> {{ park.park_email }} <br />
+                                                        <span class="card-label text-dark"><b>Park number:</b> </span> {{ park.park_number }} <br />
+                                                        <span class="card-label text-dark"><b>Park address:</b> </span> {{ park.park_address|truncatechars:15 }} <br />
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </a>
                                     </div>
-                                    <img class="card-img-bottom" src="{{ park.company.company_logo.url }}" height="200" style="object-fit: cover;"
-                                        alt="Card image cap" />
-                                    <div class="card-body">
-                                        <p class="card-text">
-                                            <span class="card-label text-dark"><b>Park name:</b> </span> {{ park.park_name }} <br />
-                                            <span class="card-label text-dark"><b>Park email:</b> </span> {{ park.park_email }} <br />
-                                            <span class="card-label text-dark"><b>Park number:</b> </span> {{ park.park_number }} <br />
-                                            <span class="card-label text-dark"><b>Park address:</b> </span> {{ park.park_address|truncatechars:15 }} <br />
-                                        </p>
-                                    </div>
-                                </div>
-                            </a>
+                                {% endfor %}
+                            </div>
                         </div>
-                        {% endfor %}
                     </div>
-                </div>
+                {% else %}
+                    <div class="content">
+                        <div class="animated fadeIn">
+                            <div class="row">
+                                    {% for park in request.user.administrator.company.park_set.all %}
+                                        {% if park %}
+                                            <div class="col-md-4">
+                                                <a href="{% url 'dashboard_park_detail' pk=park.id %}" class="text-decoration-none text-dark">
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <strong class="card-title">
+                                                                {{ park.park_name }}
+                                                                <small>
+                                                                    <span class="badge badge-success float-right mt-1">
+                                                                        {{ park.park_address|truncatechars:15 }}
+                                                                    </span>
+                                                                </small>
+                                                            </strong>
+                                                        </div>
+                                                        <img class="card-img-bottom" src="{{ park.company.company_logo.url }}" height="200" style="object-fit: cover;"
+                                                            alt="Card image cap" />
+                                                        <div class="card-body">
+                                                            <p class="card-text">
+                                                                <span class="card-label text-dark"><b>Park name:</b> </span> {{ park.park_name }} <br />
+                                                                <span class="card-label text-dark"><b>Park email:</b> </span> {{ park.park_email }} <br />
+                                                                <span class="card-label text-dark"><b>Park number:</b> </span> {{ park.park_number }} <br />
+                                                                <span class="card-label text-dark"><b>Park address:</b> </span> {{ park.park_address|truncatechars:15 }} <br />
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        {% else %}
+                                            <i class="fa fa-2x fa-trash"></i>
+                                            No park registered under this company yet!!
+                                            {{request.user.administrator.company.park_set.all}}
+                                        {% endif %}
+                                    {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
-        </div>
-    </div>
+        </div>           
 
     <div class="clearfix"></div>
-
 </div>
 {% endblock %}

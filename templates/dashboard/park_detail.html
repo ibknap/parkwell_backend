@@ -85,6 +85,10 @@
                     <table class="table">
                         <tbody>
                             <tr>
+                                <th scope="row">Administrator</th>
+                                <td>{{ park.company.administrator.user.username }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Name</th>
                                 <td>{{ park.park_name }}</td>
                             </tr>
@@ -99,10 +103,6 @@
                             <tr>
                                 <th scope="row">Total parking slots</th>
                                 <td>{{ park.total_parking_space }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Occupied parking slots</th>
-                                <td>{{ park.occupied_space }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Address</th>

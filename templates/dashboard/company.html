@@ -74,76 +74,158 @@
 
 <div id="right-panel" class="right-panel">
     {% include 'navigations/dashboard/header.html' %}
-
-    <div class="content">
-        <div class="animated fadeIn">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <strong class="card-title">Company</strong>
-                            <a href="{% url 'dashboard_company_add' %}" type="button"
-                                class="btn btn-sm btn-dark float-right">
-                                Register Company</a>
-                        </div>
-                        <div class="table-stats order-table ov-h table-responsive">
-                            <table class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="serial">ID</th>
-                                        <th class="avatar">Logo</th>
-                                        <th>Name</th>
-                                        <th>Email status</th>
-                                        <th>Verify</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for company in companies %}
-                                    <tr>
-                                        <td class="serial">{{ company.id }}</td>
-                                        <td class="avatar">
-                                            <div class="round-img">
-                                                <a href="#"><img class="rounded-circle border border-dark"
-                                                        src="{{ company.company_logo.url }}" width="42" height="42"
-                                                        alt="" /></a>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span class="name">{{ company.company_name }}</span>
-                                        </td>
-                                        <td>
-                                            <form action="{% url 'dashboard_check_email' email=company.company_email %}"
-                                                method="POST">
-                                                {% csrf_token %}
-                                                <button type="submit" class="btn btn-sm btn-secondary text-white">Check
-                                                    email</button>
-                                            </form>
-                                        </td>
-                                        <td>
-                                            {% if company.verification == True %}
-                                            <button type="button"
-                                                class="btn btn-sm btn-success text-white">Verified</button>
-                                            {% else %}
-                                            <button type="button"
-                                                class="btn btn-sm btn-warning text-white">Pending</button>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'dashboard_company_detail' pk=company.id %}" type="button"
-                                                class="btn btn-sm btn-primary text-white">View</a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+    
+    {% if request.user.is_superadmin %}
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Company</strong>
+                                <a href="{% url 'dashboard_company_add' %}" type="button"
+                                    class="btn btn-sm btn-dark float-right">
+                                    Register Company</a>
+                            </div>
+                            <div class="table-stats order-table ov-h table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="serial">ID</th>
+                                            <th class="avatar">Logo</th>
+                                            <th>Name</th>
+                                            <th>Email status</th>
+                                            <th>Verify</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for company in companies %}
+                                        <tr>
+                                            <td class="serial">{{ company.id }}</td>
+                                            <td class="avatar">
+                                                <div class="round-img">
+                                                    <a href="#"><img class="rounded-circle border border-dark"
+                                                            src="{{ company.company_logo.url }}" width="42" height="42"
+                                                            alt="" /></a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="name">{{ company.company_name }}</span>
+                                            </td>
+                                            <td>
+                                                <form action="{% url 'dashboard_check_email' email=company.company_email %}"
+                                                    method="POST">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-sm btn-secondary text-white">Check
+                                                        email</button>
+                                                </form>
+                                            </td>
+                                            <td>
+                                                {% if company.verification == True %}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-success text-white">Verified</button>
+                                                {% else %}
+                                                <button type="button"
+                                                    class="btn btn-sm btn-warning text-white">Pending</button>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'dashboard_company_detail' pk=company.id %}" type="button"
+                                                    class="btn btn-sm btn-primary text-white">View</a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    {% elif request.user.administrator.is_company_admin %}
+        <div class="content">
+            <div class="animated fadeIn">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong class="card-title">Company</strong>
+                            </div>
+                            <div class="table-stats order-table ov-h table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th class="serial">ID</th>
+                                            <th class="avatar">Logo</th>
+                                            <th>Name</th>
+                                            <th>Email status</th>
+                                            <th>Verify</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if request.user.administrator.company %}
+                                            <tr>
+                                                <td class="serial">{{ request.user.administrator.company.id }}</td>
+                                                <td class="avatar">
+                                                    <div class="round-img">
+                                                        <a href="#"><img class="rounded-circle border border-dark"
+                                                                src="{{ request.user.administrator.company.company_logo.url }}" width="42" height="42"
+                                                                alt="logo" /></a>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="name">{{ request.user.administrator.company.company_name }}</span>
+                                                </td>
+                                                <td>
+                                                    <form action="{% url 'dashboard_check_email' email=request.user.administrator.company.company_email %}"
+                                                        method="POST">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-sm btn-secondary text-white">Check
+                                                            email</button>
+                                                    </form>
+                                                </td>
+                                                <td>
+                                                    {% if request.user.administrator.company.verification == True %}
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-success text-white">Verified</button>
+                                                    {% else %}
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-warning text-white">Pending</button>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'dashboard_company_detail' pk=request.user.administrator.company.id %}" type="button"
+                                                        class="btn btn-sm btn-primary text-white">View</a>
+                                                </td>
+                                            </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>
+                                                    <i class="fa fa-2x fa-trash"></i>
+                                                </td>
+                                                <td>
+                                                    No company registered!!
+                                                </td>
+                                                <td>
+                                                    <a href="{% url 'dashboard_company_add' %}" type="button" class="btn btn-sm btn-dark float-right">
+                                                        Register Your Company Here
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+        
     <div class="clearfix"></div>
 
 </div>

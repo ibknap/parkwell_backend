@@ -39,7 +39,6 @@ class Park(models.Model):
     park_name = models.CharField(_("Park's name"), max_length=255)
     park_email = models.EmailField(_("Park's email"), max_length=255)
     total_parking_space = models.PositiveIntegerField(_("Total parking space"))
-    occupied_space = models.PositiveIntegerField(_("Occupied space"))
     park_number = models.CharField(_("Park's mobile number"), validators=[mobile_num_regex], max_length=20)
     park_address = models.CharField(_("Park's address"), max_length=255)
     park_lon = models.CharField(_("Park's longitude"), max_length=255)

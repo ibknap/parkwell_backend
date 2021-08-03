@@ -23,3 +23,17 @@ class Booking(models.Model):
 
     def __str__(self):
         return str(self.full_name)
+
+class Listing(models.Model):
+    full_name = models.CharField(_("Full name"), max_length=255)
+    email = models.EmailField(_("Email"), max_length=255)
+    mobile_number = models.CharField(_("Mobile number"), validators=[mobile_num_regex], max_length=20)
+    # timestamp
+    created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Listing")
+        verbose_name_plural = _("Listings")
+
+    def __str__(self):
+        return str(self.full_name)

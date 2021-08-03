@@ -86,9 +86,9 @@
                                     <div class="stat-content">
                                         <div class="text-left dib">
                                             <div class="stat-text">
-                                                <span class="count text-dark">{{ num_of_bookings }}</span>
+                                                <span class="count text-dark">{{ num_of_companies }}</span>
                                             </div>
-                                            <div class="stat-heading text-dark">Bookings</div>
+                                            <div class="stat-heading text-dark">Companies</div>
                                         </div>
                                     </div>
                                 </div>
@@ -136,39 +136,35 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="card">
                             <div class="card-header">
-                                <strong class="card-title">Recent Bookings On Parkwell</strong>
+                                <strong class="card-title">Recent Added Parks</strong>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover table-bordered">
                                     <thead>
                                         <tr>
                                             <th class="serial">ID</th>
-                                            <th>Full Name</th>
+                                            <th>Park Name</th>
                                             <th>Email</th>
-                                            <th>Park</th>
                                             <th>Company</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for booking in bookings %}
+                                        {% for park in parks %}
                                             <tr>
-                                                <td class="serial">{{ booking.id }}</td>
+                                                <td class="serial">{{ park.id }}</td>
                                                 <td>
-                                                    <span class="name">{{ booking.full_name }}</span>
+                                                    <span class="name">{{ park.park_name }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="product">{{ booking.email }}</span>
+                                                    <span class="product">{{ park.park_email }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="product">{{ booking.park }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="product">{{ booking.park.company.company_name }}</span>
+                                                    <span class="product">{{ park.company.company_name }}</span>
                                                 </td>
                                             </tr>
                                         {% endfor %}

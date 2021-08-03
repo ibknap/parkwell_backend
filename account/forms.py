@@ -29,3 +29,21 @@ class AdministratorForm(forms.ModelForm):
         super(AdministratorForm, self).__init__(*args, **kwargs)
         self.fields['mobile_number'].widget = forms.TextInput(attrs={'placeholder': 'mobile number',})
         self.fields['mobile_number'].label = False
+
+class UpdateFirstNameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name',)
+    def __init__(self, *args, **kwargs):
+        super(UpdateFirstNameForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget = forms.TextInput(attrs={'placeholder': 'first name',})
+        self.fields['first_name'].label = False
+
+class UpdateLastNameForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('last_name',)
+    def __init__(self, *args, **kwargs):
+        super(UpdateLastNameForm, self).__init__(*args, **kwargs)
+        self.fields['last_name'].widget = forms.TextInput(attrs={'placeholder': 'last name',})
+        self.fields['last_name'].label = False

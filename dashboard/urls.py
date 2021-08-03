@@ -18,6 +18,10 @@ urlpatterns = [
     path('check_email/<email>/', views.DashboardCheckEmail.as_view(), name='dashboard_check_email'),
 
     path('cadmin/', views.DashboardCompanyAdmin.as_view(), name='dashboard_cadmin'),
+    path('cadmin/verify_admin/<int:pk>/', views.VerifyAdmin.as_view(), name='dashboard_verify_admin'),
     path('padmin/', views.DashboardParkAdmin.as_view(), name='dashboard_padmin'),
     path('bookings/', views.DashboardBookings.as_view(), name='dashboard_bookings'),
+
+    path('users_info/', views.DashboardUsersInfo.as_view(), name='dashboard_users_info'),
+    path('users_info_delete/<int:pk>/', views.DashboardUsersInfoDelete.as_view(), name='dashboard_users_info_delete'),
 ]

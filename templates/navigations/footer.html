@@ -1,6 +1,6 @@
 {% load static %}
 
-{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
+{% if 'login' in request.get_full_path or 'admin_login' in request.get_full_path or 'register' in request.get_full_path or 'admin_register' in request.get_full_path or 'account' in request.get_full_path or 'accounts' in request.get_full_path or 'dashboard' in request.get_full_path %}
 {% else %}
     <footer id="footer">
         <div class="container d-md-flex py-4">
