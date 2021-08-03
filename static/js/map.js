@@ -79,10 +79,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 addMarkers()
                 direction.setOrigin([position.coords.longitude, position.coords.latitude]);
                 // parkCoordinates = (coord_lon, coord_lat) => { direction.setDestination([coord_lon, coord_lat]); };
-                parkCoordinates = (coord_lon, coord_lat) => { 
+                parkCoordinates = (coord_lon, coord_lat) => {
                     window.open(`https://maps.google.com/?daddr=${coord_lat},${coord_lon}`, '_blank');
                 };
-                
+
                 map.addLayer({
                     "id": "circle500",
                     "type": "circle",
@@ -163,13 +163,34 @@ document.addEventListener('DOMContentLoaded', function () {
                                 var detailsParkLogoDiv = details.appendChild(document.createElement('div'));
                                 detailsParkLogoDiv.className = "logo-div"
 
-                                var detailsParkLogo = detailsParkLogoDiv.appendChild(document.createElement('img'));
+                                var detailsParkA = detailsParkLogoDiv.appendChild(document.createElement('a'));
+                                detailsParkA.className = "logo-a"
+                                detailsParkA.style.textDecoration = "none";
+                                detailsParkA.href = '#';
+                                detailsParkA.id = "logo-a-" + prop.id;
+
+                                var detailsParkLogo = detailsParkA.appendChild(document.createElement('img'));
                                 detailsParkLogo.className = "logo-img"
                                 detailsParkLogo.src = `/media/${compInfo.logo}`;
 
                                 link.addEventListener('click', function (e) {
                                     for (var i = 0; i < data.length; i++) {
                                         if (this.id === "link-" + data[i].properties.id) {
+                                            var clickedListing = data[i];
+                                            flyToStore(clickedListing);
+                                            createPopUp(clickedListing);
+                                        }
+                                    }
+                                    var activeItem = document.getElementsByClassName('active');
+                                    if (activeItem[0]) {
+                                        activeItem[0].classList.remove('active');
+                                    }
+                                    this.parentNode.classList.add('active');
+                                });
+
+                                detailsParkA.addEventListener('click', function (e) {
+                                    for (var i = 0; i < data.length; i++) {
+                                        if (this.id === "logo-a-" + data[i].properties.id) {
                                             var clickedListing = data[i];
                                             flyToStore(clickedListing);
                                             createPopUp(clickedListing);
