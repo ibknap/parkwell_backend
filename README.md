@@ -6,7 +6,7 @@
 </div>
 
 <h1 align="center">Parkwell</h1>
-About Parkwell. Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and pollution.
+About Parkwell. Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and carbon emission.
 <!-- Status -->
 
 <!-- <h4 align="center"> 

@@ -46,8 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 zoom: 14,
             });
             map.addControl(new mapboxgl.NavigationControl());
-            var direction = new MapboxDirections({ accessToken: mapboxgl.accessToken, controls: { inputs: false, instructions: false } })
-            map.addControl(direction, 'top-left');
+            // var direction = new MapboxDirections({ accessToken: mapboxgl.accessToken, controls: { inputs: false, instructions: false } })
+            // map.addControl(direction, 'top-left');
             var from_location = [position.coords.longitude, position.coords.latitude]
             var geocoder = new MapboxGeocoder({
                 accessToken: mapboxgl.accessToken,
@@ -64,7 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('geocoderSearchBar').appendChild(geocoder.onAdd(map));
 
             if (search) {
-                geocoder.setInput(search)._geocode(search);
+                // geocoder.setInput(search)._geocode(search);
+                geocoder.query(search);
             }
 
             map.on('load', function (e) {
