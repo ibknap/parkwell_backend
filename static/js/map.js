@@ -2,7 +2,7 @@ var x = document.getElementById("map");
 var gmapGeocoder = new google.maps.Geocoder();
 var gmapSearchInputMap = document.querySelector("#gmapSearchInputMap");
 gmapAutocompleteMap = new google.maps.places.Autocomplete(gmapSearchInputMap);
-
+var from_dis;
 
 company_listing = []
 park_listing = []
@@ -54,14 +54,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             google.maps.event.addListener(gmapAutocompleteMap, 'place_changed', function () {
                 var locationPlaceMap = gmapAutocompleteMap.getPlace();
-                map.flyTo({
-                    center: [locationPlaceMap.geometry.location.lng(), locationPlaceMap.geometry.location.lat()],
-                    essential: true,
-                    zoom: 15
-                });
+                // from_dis = [parseFloat(locationPlaceMap.geometry.location.lng()), parseFloat(locationPlaceMap.geometry.location.lat())];
+                // map.flyTo({
+                //     center: [locationPlaceMap.geometry.location.lng(), locationPlaceMap.geometry.location.lat()],
+                //     essential: true,
+                //     zoom: 15
+                // });
+                window.location = `/map/${locationPlaceMap.geometry.location.lng()},${locationPlaceMap.geometry.location.lat()}/`;
             });
 
             if (lon, lat) {
+                from_dis = [parseFloat(lon), parseFloat(lat)];
                 map.flyTo({
                     center: [lon, lat],
                     essential: true,
@@ -91,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         "circle-radius": {
                             stops: [
                                 [0, 0],
-                                [14, 1000]
+                                [14, 100]
                             ],
                             base: 2
                         },
@@ -123,160 +126,163 @@ document.addEventListener('DOMContentLoaded', function () {
             function buildLocationList(data) {
                 data.forEach((park_list, i) => {
                     var prop = park_list.properties;
+                    console.log(from_dis)
+                    disFromSearch = turf.distance(park_list.geometry.coordinates, from_dis, { units: 'kilometers' }).toFixed([2]);
+
                     company_listing.forEach(compInfo => {
                         if (prop.company === compInfo.id) {
-                            if (Math.min(window.screen.width, window.screen.height) < 768) {
-                                var listings = document.getElementById('listingSmall');
-                                var listing = listings.appendChild(document.createElement('div'));
+                            if (disFromSearch <= 1.00) {
+                                if (Math.min(window.screen.width, window.screen.height) < 768) {
+                                    var listings = document.getElementById('listingSmall');
+                                    var listing = listings.appendChild(document.createElement('div'));
 
-                                listing.id = "listing-" + park_list.properties.id;
-                                listing.className = 'item';
+                                    listing.id = "listing-" + park_list.properties.id;
+                                    listing.className = 'item';
 
-                                var link = listing.appendChild(document.createElement('a'));
-                                link.style.textDecoration = "none";
-                                link.href = '#';
-                                link.className = 'title';
-                                link.id = "link-" + prop.id;
-                                link.innerHTML = `${prop.name} - <small>${prop.address}</small>`;
+                                    var link = listing.appendChild(document.createElement('a'));
+                                    link.style.textDecoration = "none";
+                                    link.href = '#';
+                                    link.className = 'title';
+                                    link.id = "link-" + prop.id;
+                                    link.innerHTML = `${prop.name} - <small>${prop.address}</small>`;
 
-                                var details = listing.appendChild(document.createElement('div'));
-                                details.className = "detail-card"
+                                    var details = listing.appendChild(document.createElement('div'));
+                                    details.className = "detail-card"
 
-                                var detailsParkInfo = details.appendChild(document.createElement('div'));
-                                detailsParkInfo.className = "park-info"
-                                detailsParkInfo.innerHTML = prop.info;
+                                    var detailsParkInfo = details.appendChild(document.createElement('div'));
+                                    detailsParkInfo.className = "park-info"
+                                    detailsParkInfo.innerHTML = prop.info;
 
-                                detailsParkInfoUL = detailsParkInfo.appendChild(document.createElement('ul'));
-                                detailsParkInfoUL.className = "park-info-ul"
+                                    detailsParkInfoUL = detailsParkInfo.appendChild(document.createElement('ul'));
+                                    detailsParkInfoUL.className = "park-info-ul"
 
-                                detailsParkInfoLi = detailsParkInfoUL.appendChild(document.createElement('li'));
-                                detailsParkInfoLi2 = detailsParkInfoUL.appendChild(document.createElement('li'));
-                                detailsParkInfoLi.className = "park-info-li"
-                                detailsParkInfoLi2.className = "park-info-li"
+                                    detailsParkInfoLi = detailsParkInfoUL.appendChild(document.createElement('li'));
+                                    detailsParkInfoLi2 = detailsParkInfoUL.appendChild(document.createElement('li'));
+                                    detailsParkInfoLi.className = "park-info-li"
+                                    detailsParkInfoLi2.className = "park-info-li"
 
-                                detailsParkInfoLiCall = detailsParkInfoLi.appendChild(document.createElement('a'));
-                                detailsParkInfoLiCall.href = `tel:${prop.phone}`;
-                                detailsParkInfoLiCall.innerHTML = `mobile - ${prop.phone}`;
-                                detailsParkInfoLi2.innerHTML = `closing time - ${prop.closing_time}`;
+                                    detailsParkInfoLiCall = detailsParkInfoLi.appendChild(document.createElement('a'));
+                                    detailsParkInfoLiCall.href = `tel:${prop.phone}`;
+                                    detailsParkInfoLiCall.innerHTML = `mobile - ${prop.phone}`;
 
-                                var detailsParkLogoDiv = details.appendChild(document.createElement('div'));
-                                detailsParkLogoDiv.className = "logo-div"
+                                    var detailsParkLogoDiv = details.appendChild(document.createElement('div'));
+                                    detailsParkLogoDiv.className = "logo-div"
 
-                                var detailsParkA = detailsParkLogoDiv.appendChild(document.createElement('a'));
-                                detailsParkA.className = "logo-a"
-                                detailsParkA.style.textDecoration = "none";
-                                detailsParkA.href = '#';
-                                detailsParkA.id = "logo-a-" + prop.id;
+                                    var detailsParkA = detailsParkLogoDiv.appendChild(document.createElement('a'));
+                                    detailsParkA.className = "logo-a"
+                                    detailsParkA.style.textDecoration = "none";
+                                    detailsParkA.href = '#';
+                                    detailsParkA.id = "logo-a-" + prop.id;
 
-                                var detailsParkLogo = detailsParkA.appendChild(document.createElement('img'));
-                                detailsParkLogo.className = "logo-img"
-                                detailsParkLogo.src = `/media/${compInfo.logo}`;
+                                    var detailsParkLogo = detailsParkA.appendChild(document.createElement('img'));
+                                    detailsParkLogo.className = "logo-img"
+                                    detailsParkLogo.src = `/media/${compInfo.logo}`;
 
-                                link.addEventListener('click', function (e) {
-                                    for (var i = 0; i < data.length; i++) {
-                                        if (this.id === "link-" + data[i].properties.id) {
-                                            var clickedListing = data[i];
-                                            flyToStore(clickedListing);
-                                            createPopUp(clickedListing);
+                                    link.addEventListener('click', function (e) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            if (this.id === "link-" + data[i].properties.id) {
+                                                var clickedListing = data[i];
+                                                flyToStore(clickedListing);
+                                                createPopUp(clickedListing);
+                                            }
                                         }
-                                    }
-                                    var activeItem = document.getElementsByClassName('active');
-                                    if (activeItem[0]) {
-                                        activeItem[0].classList.remove('active');
-                                    }
-                                    this.parentNode.classList.add('active');
-                                });
-
-                                detailsParkA.addEventListener('click', function (e) {
-                                    for (var i = 0; i < data.length; i++) {
-                                        if (this.id === "logo-a-" + data[i].properties.id) {
-                                            var clickedListing = data[i];
-                                            flyToStore(clickedListing);
-                                            createPopUp(clickedListing);
+                                        var activeItem = document.getElementsByClassName('active');
+                                        if (activeItem[0]) {
+                                            activeItem[0].classList.remove('active');
                                         }
-                                    }
-                                    var activeItem = document.getElementsByClassName('active');
-                                    if (activeItem[0]) {
-                                        activeItem[0].classList.remove('active');
-                                    }
-                                    this.parentNode.classList.add('active');
-                                });
-                            } else {
-                                var listings = document.getElementById('listings');
-                                var listing = listings.appendChild(document.createElement('div'));
+                                        this.parentNode.classList.add('active');
+                                    });
 
-                                listing.id = "listing-" + park_list.properties.id;
-                                listing.className = 'item';
-
-                                var link = listing.appendChild(document.createElement('a'));
-                                link.style.textDecoration = "none";
-                                link.href = '#';
-                                link.className = 'title';
-                                link.id = "link-" + prop.id;
-                                link.innerHTML = `${prop.name} - <small>${prop.address}</small>`;
-
-                                var details = listing.appendChild(document.createElement('div'));
-                                details.className = "detail-card"
-
-                                var detailsParkInfo = details.appendChild(document.createElement('div'));
-                                detailsParkInfo.className = "park-info"
-                                detailsParkInfo.innerHTML = prop.info;
-
-                                detailsParkInfoUL = detailsParkInfo.appendChild(document.createElement('ul'));
-                                detailsParkInfoUL.className = "park-info-ul"
-
-                                detailsParkInfoLi = detailsParkInfoUL.appendChild(document.createElement('li'));
-                                detailsParkInfoLi2 = detailsParkInfoUL.appendChild(document.createElement('li'));
-                                detailsParkInfoLi.className = "park-info-li"
-                                detailsParkInfoLi2.className = "park-info-li"
-
-                                detailsParkInfoLiCall = detailsParkInfoLi.appendChild(document.createElement('a'));
-                                detailsParkInfoLiCall.href = `tel:${prop.phone}`;
-                                detailsParkInfoLiCall.innerHTML = `mobile - ${prop.phone}`;
-                                detailsParkInfoLi2.innerHTML = `closing time - ${prop.closing_time}`;
-
-                                var detailsParkLogoDiv = details.appendChild(document.createElement('div'));
-                                detailsParkLogoDiv.className = "logo-div"
-
-                                var detailsParkA = detailsParkLogoDiv.appendChild(document.createElement('a'));
-                                detailsParkA.className = "logo-a"
-                                detailsParkA.style.textDecoration = "none";
-                                detailsParkA.href = '#';
-                                detailsParkA.id = "logo-a-" + prop.id;
-
-                                var detailsParkLogo = detailsParkA.appendChild(document.createElement('img'));
-                                detailsParkLogo.className = "logo-img"
-                                detailsParkLogo.src = `/media/${compInfo.logo}`;
-
-                                link.addEventListener('click', function (e) {
-                                    for (var i = 0; i < data.length; i++) {
-                                        if (this.id === "link-" + data[i].properties.id) {
-                                            var clickedListing = data[i];
-                                            flyToStore(clickedListing);
-                                            createPopUp(clickedListing);
+                                    detailsParkA.addEventListener('click', function (e) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            if (this.id === "logo-a-" + data[i].properties.id) {
+                                                var clickedListing = data[i];
+                                                flyToStore(clickedListing);
+                                                createPopUp(clickedListing);
+                                            }
                                         }
-                                    }
-                                    var activeItem = document.getElementsByClassName('active');
-                                    if (activeItem[0]) {
-                                        activeItem[0].classList.remove('active');
-                                    }
-                                    this.parentNode.classList.add('active');
-                                });
-
-                                detailsParkA.addEventListener('click', function (e) {
-                                    for (var i = 0; i < data.length; i++) {
-                                        if (this.id === "logo-a-" + data[i].properties.id) {
-                                            var clickedListing = data[i];
-                                            flyToStore(clickedListing);
-                                            createPopUp(clickedListing);
+                                        var activeItem = document.getElementsByClassName('active');
+                                        if (activeItem[0]) {
+                                            activeItem[0].classList.remove('active');
                                         }
-                                    }
-                                    var activeItem = document.getElementsByClassName('active');
-                                    if (activeItem[0]) {
-                                        activeItem[0].classList.remove('active');
-                                    }
-                                    this.parentNode.classList.add('active');
-                                });
+                                        this.parentNode.classList.add('active');
+                                    });
+                                } else {
+                                    var listings = document.getElementById('listings');
+                                    var listing = listings.appendChild(document.createElement('div'));
+
+                                    listing.id = "listing-" + park_list.properties.id;
+                                    listing.className = 'item';
+
+                                    var link = listing.appendChild(document.createElement('a'));
+                                    link.style.textDecoration = "none";
+                                    link.href = '#';
+                                    link.className = 'title';
+                                    link.id = "link-" + prop.id;
+                                    link.innerHTML = `${prop.name} - <small>${prop.address}</small>`;
+
+                                    var details = listing.appendChild(document.createElement('div'));
+                                    details.className = "detail-card"
+
+                                    var detailsParkInfo = details.appendChild(document.createElement('div'));
+                                    detailsParkInfo.className = "park-info"
+                                    detailsParkInfo.innerHTML = prop.info;
+
+                                    detailsParkInfoUL = detailsParkInfo.appendChild(document.createElement('ul'));
+                                    detailsParkInfoUL.className = "park-info-ul"
+
+                                    detailsParkInfoLi = detailsParkInfoUL.appendChild(document.createElement('li'));
+                                    detailsParkInfoLi2 = detailsParkInfoUL.appendChild(document.createElement('li'));
+                                    detailsParkInfoLi.className = "park-info-li"
+                                    detailsParkInfoLi2.className = "park-info-li"
+
+                                    detailsParkInfoLiCall = detailsParkInfoLi.appendChild(document.createElement('a'));
+                                    detailsParkInfoLiCall.href = `tel:${prop.phone}`;
+                                    detailsParkInfoLiCall.innerHTML = `mobile - ${prop.phone}`;
+
+                                    var detailsParkLogoDiv = details.appendChild(document.createElement('div'));
+                                    detailsParkLogoDiv.className = "logo-div"
+
+                                    var detailsParkA = detailsParkLogoDiv.appendChild(document.createElement('a'));
+                                    detailsParkA.className = "logo-a"
+                                    detailsParkA.style.textDecoration = "none";
+                                    detailsParkA.href = '#';
+                                    detailsParkA.id = "logo-a-" + prop.id;
+
+                                    var detailsParkLogo = detailsParkA.appendChild(document.createElement('img'));
+                                    detailsParkLogo.className = "logo-img"
+                                    detailsParkLogo.src = `/media/${compInfo.logo}`;
+
+                                    link.addEventListener('click', function (e) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            if (this.id === "link-" + data[i].properties.id) {
+                                                var clickedListing = data[i];
+                                                flyToStore(clickedListing);
+                                                createPopUp(clickedListing);
+                                            }
+                                        }
+                                        var activeItem = document.getElementsByClassName('active');
+                                        if (activeItem[0]) {
+                                            activeItem[0].classList.remove('active');
+                                        }
+                                        this.parentNode.classList.add('active');
+                                    });
+
+                                    detailsParkA.addEventListener('click', function (e) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            if (this.id === "logo-a-" + data[i].properties.id) {
+                                                var clickedListing = data[i];
+                                                flyToStore(clickedListing);
+                                                createPopUp(clickedListing);
+                                            }
+                                        }
+                                        var activeItem = document.getElementsByClassName('active');
+                                        if (activeItem[0]) {
+                                            activeItem[0].classList.remove('active');
+                                        }
+                                        this.parentNode.classList.add('active');
+                                    });
+                                }
                             }
                         }
                     });
@@ -305,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         <p>
                             <i class="fa fa-lg fa-phone-alt"></i> <a href="tel:${currentFeature.properties.phone}">${currentFeature.properties.phone}</a> <br/>
                             <i class="fa fa-lg fa-map-marker-alt"></i> ${currentFeature.properties.address} <br/>
-                            <i class="fa fa-lg fa-clock"></i> closing time - ${currentFeature.properties.closing_time} <br/>
                             <i class="fa fa-lg fa-envelope"></i> <a href="mailto:${currentFeature.properties.email}">${currentFeature.properties.email}</a> <br/>
                             <i class="fa fa-lg fa-route"></i> ${distance.toFixed(2)} K/m <br/>
                             <div style="background-color: #000;">
