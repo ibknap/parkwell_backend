@@ -43,7 +43,8 @@ class Park(models.Model):
     park_address = models.CharField(_("Park's address"), max_length=255)
     park_lon = models.CharField(_("Park's longitude"), max_length=255)
     park_lat = models.CharField(_("Park's latitude"), max_length=255)
-    park_closing_time = models.CharField(_("Park's closing time"),choices=TIME, max_length=255)
+    # park_opening_time = models.CharField(_("Park's closing time"),choices=TIME, max_length=255)
+    # park_closing_time = models.CharField(_("Park's closing time"),choices=TIME, max_length=255)
     park_about = models.TextField(_("About Park"), max_length=500)
     # timestamp
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)

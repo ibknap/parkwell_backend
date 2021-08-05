@@ -75,7 +75,7 @@
 <div id="right-panel" class="right-panel">
     {% include 'navigations/dashboard/header.html' %}
     
-    {% if request.user.is_superadmin %}
+    {% if request.user.is_superuser and request.user.administrator.is_company_admin %}
         <div class="content">
             <div class="animated fadeIn">
                 <div class="row">

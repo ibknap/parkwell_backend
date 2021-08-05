@@ -1,4 +1,8 @@
 var x = document.getElementById("map");
+var gmapGeocoder = new google.maps.Geocoder();
+var gmapSearchInputMap = document.querySelector("#gmapSearchInputMap");
+gmapAutocompleteMap = new google.maps.places.Autocomplete(gmapSearchInputMap);
+
 
 company_listing = []
 park_listing = []
@@ -43,29 +47,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 container: 'map',
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [position.coords.longitude, position.coords.latitude],
-                zoom: 14,
+                zoom: 15,
             });
             map.addControl(new mapboxgl.NavigationControl());
-            // var direction = new MapboxDirections({ accessToken: mapboxgl.accessToken, controls: { inputs: false, instructions: false } })
-            // map.addControl(direction, 'top-left');
             var from_location = [position.coords.longitude, position.coords.latitude]
-            var geocoder = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                mapboxgl: mapboxgl,
-                marker: false,
-                placeholder: 'Where are you going?',
-                // bbox: [2.6732260060205, 4.17127461812752, 14.6779689999906, 13.8933569863574],
-                // proximity: {
-                //     longitude: 8.10530640960786,
-                //     latitude: 9.59395988695573
-                // }
+
+            google.maps.event.addListener(gmapAutocompleteMap, 'place_changed', function () {
+                var locationPlaceMap = gmapAutocompleteMap.getPlace();
+                map.flyTo({
+                    center: [locationPlaceMap.geometry.location.lng(), locationPlaceMap.geometry.location.lat()],
+                    essential: true,
+                    zoom: 15
+                });
             });
 
-            document.getElementById('geocoderSearchBar').appendChild(geocoder.onAdd(map));
-
-            if (search) {
-                // geocoder.setInput(search)._geocode(search);
-                geocoder.query(search);
+            if (lon, lat) {
+                map.flyTo({
+                    center: [lon, lat],
+                    essential: true,
+                    zoom: 15
+                });
             }
 
             map.on('load', function (e) {
@@ -78,8 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 buildLocationList(park_listing);
                 addMarkers()
-                direction.setOrigin([position.coords.longitude, position.coords.latitude]);
-                // parkCoordinates = (coord_lon, coord_lat) => { direction.setDestination([coord_lon, coord_lat]); };
                 parkCoordinates = (coord_lon, coord_lat) => {
                     window.open(`https://maps.google.com/?daddr=${coord_lat},${coord_lon}`, '_blank');
                 };
@@ -124,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
             function buildLocationList(data) {
                 data.forEach((park_list, i) => {
                     var prop = park_list.properties;
-
                     company_listing.forEach(compInfo => {
                         if (prop.company === compInfo.id) {
                             if (Math.min(window.screen.width, window.screen.height) < 768) {
@@ -283,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     });
                 });
-            }
+            };
 
             // interactivity
             function flyToStore(currentFeature) {

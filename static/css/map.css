@@ -476,3 +476,41 @@ a:hover {
     text-decoration: none;
     border: 2px solid #009A00;
 }
+
+.gmapsearch-div {
+    position: fixed;
+    right: 50px;
+    top: 70px;
+    z-index: 2;
+    width: 30%;
+    font-size: 15px;
+    max-width: 30%;
+    text-align: center;
+    background: #fff;
+    border-radius: 5px;
+    justify-content: center;
+    color: #000;
+}
+
+@media (max-width: 767.98px) {
+    .gmapsearch-div {
+        width: 70%;
+        max-width: 70%;
+    }
+}
+
+.gmapsearchmap-input {
+    font: inherit;
+    width: 100%;
+    border: 0;
+    background-color: transparent;
+    margin: 0;
+    height: 40px;
+    color: #404040;
+    padding: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-align: center;
+}
+
