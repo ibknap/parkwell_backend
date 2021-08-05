@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function () {
             function buildLocationList(data) {
                 data.forEach((park_list, i) => {
                     var prop = park_list.properties;
-                    console.log(from_dis)
                     disFromSearch = turf.distance(park_list.geometry.coordinates, from_dis, { units: 'kilometers' }).toFixed([2]);
 
                     company_listing.forEach(compInfo => {
@@ -283,6 +282,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                         this.parentNode.classList.add('active');
                                     });
                                 }
+                            } else {
+                                console.log("NoParkIcon");
+                                var NoParkIcon = document.getElementById('NoParkIcon');
+                                NoParkIcon.style.display = "block"
                             }
                         }
                     });
@@ -312,7 +315,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <i class="fa fa-lg fa-phone-alt"></i> <a href="tel:${currentFeature.properties.phone}">${currentFeature.properties.phone}</a> <br/>
                             <i class="fa fa-lg fa-map-marker-alt"></i> ${currentFeature.properties.address} <br/>
                             <i class="fa fa-lg fa-envelope"></i> <a href="mailto:${currentFeature.properties.email}">${currentFeature.properties.email}</a> <br/>
-                            <i class="fa fa-lg fa-route"></i> ${distance.toFixed(2)} K/m <br/>
+                            <i class="fa fa-lg fa-route"></i> ${distance.toFixed(2)} Km <br/>
                             <div style="background-color: #000;">
                                 <!-- <a href="/booking/create/${currentFeature.properties.id}/" class="book-btn">book</a> <br/> -->
                                 <button class="navigate-btn" onclick='parkCoordinates(${currentFeature.geometry.lon}, ${currentFeature.geometry.lat})'>Get direction</button> <br/>
