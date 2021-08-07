@@ -323,7 +323,7 @@
                                 <p class="text-danger">{{ error }}</p>
                             {% endfor %}
                         {% endif %}
-                        {% if forloop.counter > 3 and forloop.counter < 5 %}
+                        {% if forloop.counter > 3 and forloop.counter < 7 %}
                             {{ field|add_class:'fadeIn fourth' }}
                             {% for error in field.errors %}
                                 <p class="text-danger">{{ error }}</p>
