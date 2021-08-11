@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.template import loader
 from company.models import Company
 from rest_framework import status
-from main.models import Booking
+from main.models import Booking, Navigate
 from django.db.models import Q
 from park.models import Park
 from itertools import chain
@@ -32,6 +32,12 @@ class Waitlist(View):
             listing_form.save()
             messages.success(request, 'You have been add to waitlist!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+class NavigateView(View):
+    def get(self, request, park_id, coord_lat, coord_lon, *args, **kwargs):
+        park = Park.objects.get(id=park_id)
+        Navigate.objects.create(park=park, company=park.company)
+        return redirect(f'https://maps.google.com/?daddr={coord_lat},{coord_lon}')
 
 class Booking(View):
     template_name='booking/detail.html'

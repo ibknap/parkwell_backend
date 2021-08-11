@@ -4,6 +4,7 @@ from . import views
 urlpatterns = [
     path('', views.Main.as_view(), name="main"),
     path('waitlist/', views.Waitlist.as_view(), name="waitlist"),
+    path('navigate/<park_id>/<coord_lat>/<coord_lon>/', views.NavigateView.as_view(), name="navigate"),
 
     path('contact_us/', views.ContactUs.as_view(), name='contact_us'),
     

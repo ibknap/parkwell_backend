@@ -1,8 +1,10 @@
+from main.models import Navigate
+from django.http import request
 from django.views.generic.base import TemplateView
 from park.forms import ParkForm
-from account.models import Administrator
+from account.models import Administrator, ParkAdmin
 from django.contrib.auth.models import User
-from account.forms import AdministratorForm, RegisterForm
+from account.forms import AdministratorForm, ParkAdminForm, RegisterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -12,7 +14,9 @@ from django.shortcuts import redirect, render
 from company.forms import CompanyForm
 from django.contrib import messages
 from company.models import Company
+from django.utils import timezone
 from park.models import Park
+import datetime
 
 class DashboardCheckEmail(LoginRequiredMixin, View):
     login_url = 'admin_login'
@@ -32,7 +36,34 @@ class Dashboard(LoginRequiredMixin, View):
     template_name = "dashboard/dashboard.html"
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name)
+        context = {}
+        try:
+            context["company_parks"] = Park.objects.filter(company=request.user.administrator.company)
+            context["num_of_company_parks"] = Park.objects.filter(company=request.user.administrator.company).count()
+        except:
+            context["num_of_company_parks"] = 0
+            if request.user.is_superuser:
+                return render(request, self.template_name, context)
+            messages.error(request, 'No Company Related to account, create one at company section!')
+            return render(request, self.template_name, context)
+        
+        try:
+            context["num_of_company_navigate"] = Navigate.objects.filter(company=request.user.administrator.company).count()
+            week_ago = timezone.now() - datetime.timedelta(days=7)
+            month_ago = timezone.now() - datetime.timedelta(days=30)
+            day_100_ago = timezone.now() - datetime.timedelta(days=100)
+            
+            context["company_navigate_7"] = Navigate.objects.filter(company=request.user.administrator.company, created_on__range=[week_ago, timezone.now()]).count()
+            context["company_navigate_30"] = Navigate.objects.filter(company=request.user.administrator.company, created_on__range=[month_ago, timezone.now()]).count()
+            context["company_navigate_100"] = Navigate.objects.filter(company=request.user.administrator.company, created_on__range=[day_100_ago, timezone.now()]).count()
+        except:
+            context["num_of_company_navigate"] = 0
+            context["company_navigate_7"] = 0
+            context["company_navigate_30"] = 0
+            context["company_navigate_100"] = 0
+            messages.error(request, 'No navigations done on any parks')
+            return render(request, self.template_name, context)
+        return render(request, self.template_name, context)
 
 class DashboardCompany(LoginRequiredMixin, View):
     login_url = 'admin_login'
@@ -150,8 +181,8 @@ class DashboardParkAdmin(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         register_form = RegisterForm(request.POST)
-        administrator_form = AdministratorForm(request.POST, request.FILES)
-        if register_form.is_valid() and administrator_form.is_valid():
+        park_admin_form = ParkAdminForm(request.POST, request.FILES)
+        if register_form.is_valid() and park_admin_form.is_valid():
             username = register_form.cleaned_data.get('username')
             email = register_form.cleaned_data.get('email')
             if User.objects.filter(username=username).exists():
@@ -162,19 +193,18 @@ class DashboardParkAdmin(LoginRequiredMixin, View):
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
             else:
                 user_save = register_form.save(commit=False)
-                if Administrator.objects.filter(user=user_save).exists():
-                    messages.error(request, "User already has a company admin profile. Try another")
+                if ParkAdmin.objects.filter(user=user_save).exists():
+                    messages.error(request, "User already has a park admin profile. Try another")
                     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
                 else:
-                    administrator_save = administrator_form.save(commit=False)
-                    administrator_save.user = user_save
-                    administrator_save.is_park_admin = True
-                    administrator_save.verification = True
+                    park_admin_save = park_admin_form.save(commit=False)
+                    park_admin_save.user = user_save
+                    park_admin_save.company_admin = request.user.administrator
                     user_save.save()
-                    administrator_save.save()
-                messages.success(request, 'Company admin added!')
+                    park_admin_save.save()
+                messages.success(request, 'Park admin added!')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-        return render(request, self.template_name, {'register_form': register_form, 'administrator_form': administrator_form})
+        return render(request, self.template_name, {'register_form': register_form, 'park_admin_form': park_admin_form})
 
 class DashboardBookings(LoginRequiredMixin, View):
     login_url = 'admin_login'
@@ -204,6 +234,11 @@ class DashboardParkEdit(LoginRequiredMixin, View):
     login_url = 'admin_login'
     template_name='dashboard/park_edit.html'
 
+    def get_form_kwargs(self):
+        kwargs = super(DashboardParkdAdd, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
+
     def get(self, request, pk, *args, **kwargs):
         context = {}
         context['park'] = Park.objects.get(id=pk)
@@ -211,7 +246,19 @@ class DashboardParkEdit(LoginRequiredMixin, View):
 
     def post(self, request, pk, *args, **kwargs):
         context = {}
-        park_form = ParkForm(request.POST, request.FILES)
+        park = Park.objects.get(id=pk)
+        park_initial = {}
+        park_initial['park_admin'] = park.park_admin
+        park_initial['park_name'] = park.park_name
+        park_initial['park_email'] = park.park_email
+        park_initial['total_parking_space'] = park.total_parking_space
+        park_initial['park_number'] = park.park_number
+        park_initial['park_address'] = park.park_address
+        park_initial['park_lon'] = park.park_lon
+        park_initial['park_lat'] = park.park_lat
+        park_initial['park_about'] = park.park_about
+
+        park_form = ParkForm(request.POST, request.FILES, request=request, instance=park, initial=park_initial)
         park = Park.objects.get(id=pk)
         context['park'] = park
         context['park_form'] = park_form
@@ -219,10 +266,10 @@ class DashboardParkEdit(LoginRequiredMixin, View):
             park.park_name = park_form.cleaned_data.get('park_name')
             park.park_email = park_form.cleaned_data.get('park_email')
             park.total_parking_space = park_form.cleaned_data.get('total_parking_space')
-            park.occupied_space = park_form.cleaned_data.get('occupied_space')
             park.park_number = park_form.cleaned_data.get('park_number')
             park.park_address = park_form.cleaned_data.get('park_address')
-            park.park_coordinates = park_form.cleaned_data.get('park_coordinates')
+            park.park_lon = park_form.cleaned_data.get('park_lon')
+            park.park_lat = park_form.cleaned_data.get('park_lat')
             park.park_about = park_form.cleaned_data.get('park_about')
             park.save()
             messages.success(request, 'Park updated!')
@@ -232,13 +279,19 @@ class DashboardParkEdit(LoginRequiredMixin, View):
 class DashboardParkdAdd(LoginRequiredMixin, View):
     login_url = 'admin_login'
     template_name='dashboard/park_add.html'
+    form_class = ParkForm
+
+    def get_form_kwargs(self):
+        kwargs = super(DashboardParkdAdd, self).get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
 
     def post(self, request, *args, **kwargs):
         context = {}
-        park_form = ParkForm(request.POST, request.FILES)
+        park_form = ParkForm(request.POST, request.FILES, request=request)
         context['park_form'] = park_form
         if park_form.is_valid():
             try:

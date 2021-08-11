@@ -75,105 +75,270 @@
 
         <div class="content">
             <div class="animated fadeIn">
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="card" style="background-color: #fcfc04 !important; box-shadow: 0px 7px 13px 0px grey;">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-2">
-                                        <i class="ti-bookmark-alt"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text">
-                                                <span class="count text-dark">{{ num_of_companies }}</span>
+                {% if request.user.is_superuser %}                    
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="card" style="background-color: #fcfc04 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-2">
+                                            <i class="ti-bookmark-alt"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-dark">{{ num_of_companies }}</span>
+                                                </div>
+                                                <div class="stat-heading text-dark">Companies</div>
                                             </div>
-                                            <div class="stat-heading text-dark">Companies</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-sm-4">
-                        <div class="card" style="background-color: #000 !important; box-shadow: 0px 7px 13px 0px grey;">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-3">
-                                        <i class="ti-car"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text">
-                                                <span class="count text-white">{{ num_of_parks }}</span>
+                        <div class="col-sm-3">
+                            <div class="card" style="background-color: #000 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-3">
+                                            <i class="ti-car"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-white">{{ num_of_parks }}</span>
+                                                </div>
+                                                <div class="stat-heading text-white">Parks</div>
                                             </div>
-                                            <div class="stat-heading text-white">Parks</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-sm-4">
-                        <div class="card" style="background-color: #009A00 !important; box-shadow: 0px 7px 13px 0px grey;">
-                            <div class="card-body">
-                                <div class="stat-widget-five">
-                                    <div class="stat-icon dib flat-color-4">
-                                        <i class="pe-7s-users"></i>
-                                    </div>
-                                    <div class="stat-content">
-                                        <div class="text-left dib">
-                                            <div class="stat-text">
-                                                <span class="count text-white">{{ num_of_users }}</span>
+                        <div class="col-sm-3">
+                            <div class="card" style="background-color: #009A00 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-4">
+                                            <i class="pe-7s-users"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-white">{{ num_of_users }}</span>
+                                                </div>
+                                                <div class="stat-heading text-white">Clients</div>
                                             </div>
-                                            <div class="stat-heading text-white">Clients</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="card" style="background-color: #ff0055 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-4">
+                                            <img src="{% static 'images/navigate.svg' %}" width="50" height="50">
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-white">{{ num_of_navigations }}</span>
+                                                </div>
+                                                <div class="stat-heading text-white">Total Visits</div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <strong class="card-title">Recently Added Parks</strong>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th class="serial">ID</th>
-                                            <th>Park Name</th>
-                                            <th>Email</th>
-                                            <th>Company</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for park in parks %}
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Recently Added Parks</strong>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
                                             <tr>
-                                                <td class="serial">{{ park.id }}</td>
+                                                <th class="serial">ID</th>
+                                                <th>Park Name</th>
+                                                <th>Email</th>
+                                                <th>Company</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for park in parks %}
+                                                <tr>
+                                                    <td class="serial">{{ park.id }}</td>
+                                                    <td>
+                                                        <span class="name">{{ park.park_name }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="product">{{ park.park_email }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="product">{{ park.company.company_name }}</span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Visits</strong>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Last 7 days</th>
+                                                <th>Last 30 days</th>
+                                                <th>Last 100 days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
                                                 <td>
-                                                    <span class="name">{{ park.park_name }}</span>
+                                                    <span class="product">{{ navigate_7 }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="product">{{ park.park_email }}</span>
+                                                    <span class="product">{{ navigate_30 }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="product">{{ park.company.company_name }}</span>
+                                                    <span class="product">{{ navigate_100 }}</span>
                                                 </td>
                                             </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {% elif request.user.administrator.is_company_admin %}
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6">
+                            <div class="card" style="background-color: #009A00 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-4">
+                                            <img src="{% static 'images/navigate.svg' %}" width="50" height="50">
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-white">{{ num_of_company_navigate }}</span>
+                                                </div>
+                                                <div class="stat-heading text-white">Total Visits</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="card" style="background-color: #000 !important; box-shadow: 0px 7px 13px 0px grey;">
+                                <div class="card-body">
+                                    <div class="stat-widget-five">
+                                        <div class="stat-icon dib flat-color-3">
+                                            <i class="ti-car"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <div class="text-left dib">
+                                                <div class="stat-text">
+                                                    <span class="count text-white">{{ num_of_company_parks }}</span>
+                                                </div>
+                                                <div class="stat-heading text-white">Your Parks</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Recently Added Parks</strong>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="serial">ID</th>
+                                                <th>Park Name</th>
+                                                <th>Email</th>
+                                                <th>Company</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for park in company_parks %}
+                                                <tr>
+                                                    <td class="serial">{{ park.id }}</td>
+                                                    <td>
+                                                        <span class="name">{{ park.park_name }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="product">{{ park.park_email }}</span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="product">{{ park.company.company_name }}</span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <strong class="card-title">Visits</strong>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Last 7 days</th>
+                                                <th>Last 30 days</th>
+                                                <th>Last 100 days</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <span class="product">{{ company_navigate_7 }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="product">{{ company_navigate_30 }}</span>
+                                                </td>
+                                                <td>
+                                                    <span class="product">{{ company_navigate_100 }}</span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
 

@@ -1,3 +1,4 @@
+from account.models import ParkAdmin
 from django.utils.translation import gettext as _
 from django.core.validators import RegexValidator
 from company.models import Company
@@ -36,6 +37,7 @@ TIME = [
 
 class Park(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    park_admin = models.OneToOneField(ParkAdmin, on_delete=models.CASCADE)
     park_name = models.CharField(_("Park's name"), max_length=255)
     park_email = models.EmailField(_("Park's email"), max_length=255)
     total_parking_space = models.PositiveIntegerField(_("Total parking space"))

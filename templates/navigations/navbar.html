@@ -21,7 +21,7 @@
                         {% if request.get_full_path == '/waitlist/' %}
                         {% else %}
                             {% if request.user.is_authenticated %}
-                                {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.administrator.is_park_admin %}
+                                {% if request.user.is_superuser or request.user.administrator.is_company_admin or request.user.parkadmin %}
                                     <a href="{% url 'dashboard' %}" class="register-btn d-inline">Dashboard</a>
                                 {% else %}
                                     <a href="{% url 'user_detail' pk=request.user.id %}" class="register-btn d-inline">Account</a>

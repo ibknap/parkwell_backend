@@ -82,8 +82,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
                 buildLocationList(park_listing);
                 addMarkers()
-                parkCoordinates = (coord_lon, coord_lat) => {
-                    window.open(`https://maps.google.com/?daddr=${coord_lat},${coord_lon}`, '_blank');
+                parkCoordinates = (park_id, coord_lon, coord_lat) => {
+                    window.open(`/navigate/${park_id}/${coord_lat}/${coord_lon}/`);
+                    // window.open(`https://maps.google.com/?daddr=${coord_lat},${coord_lon}`, '_blank');
                 };
 
                 map.addLayer({
@@ -318,7 +319,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <i class="fa fa-lg fa-route"></i> ${distance.toFixed(2)} Km <br/>
                             <div style="background-color: #000;">
                                 <!-- <a href="/booking/create/${currentFeature.properties.id}/" class="book-btn">book</a> <br/> -->
-                                <button class="navigate-btn" onclick='parkCoordinates(${currentFeature.geometry.lon}, ${currentFeature.geometry.lat})'>Get direction</button> <br/>
+                                <button class="navigate-btn" onclick='parkCoordinates(${currentFeature.properties.id}, ${currentFeature.geometry.lon}, ${currentFeature.geometry.lat})'>Get direction</button> <br/>
                             </div>
                         </p>`)
                     .addTo(map);

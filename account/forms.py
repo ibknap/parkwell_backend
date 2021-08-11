@@ -1,4 +1,4 @@
-from account.models import Administrator
+from account.models import Administrator, ParkAdmin
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 from django import forms
@@ -29,6 +29,15 @@ class AdministratorForm(forms.ModelForm):
         fields = ('mobile_number', )
     def __init__(self, *args, **kwargs):
         super(AdministratorForm, self).__init__(*args, **kwargs)
+        self.fields['mobile_number'].widget = forms.TextInput(attrs={'placeholder': 'mobile number',})
+        self.fields['mobile_number'].label = False
+
+class ParkAdminForm(forms.ModelForm):
+    class Meta:
+        model = ParkAdmin
+        fields = ('mobile_number', )
+    def __init__(self, *args, **kwargs):
+        super(ParkAdminForm, self).__init__(*args, **kwargs)
         self.fields['mobile_number'].widget = forms.TextInput(attrs={'placeholder': 'mobile number',})
         self.fields['mobile_number'].label = False
 

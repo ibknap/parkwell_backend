@@ -16,13 +16,66 @@
 <meta property="og:title" content="Waitlist">
 <title>Waitlist</title>
 {% endblock %}
+{% block toplink %}
+<style>
+    @media (min-width: 1200px) {
+        .c-w {
+            max-width: 750px !important;
+        }
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 <main id="main">
-    <div class="container" style="margin-top: 200px; margin-bottom: 200px;">
+    <div class="container" style="margin-top: 150px; margin-bottom: 200px;">
+        <div class="container c-w">
+            <div class="row justify-content-center mb-3">
+                <div class="col-sm-6">
+                    <div style="height: 220px;" class="php-email-form p-0">
+                        <img src="{% static 'images/meetings.jpg' %}" width="100%" height="100%" alt="image">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div style="border-left:3px solid #009a00;" class="php-email-form">
+                        <h5 class="card-title" style="color: #009a00;"><b>Missed Meetings</b></h5>
+                        <p class="card-text" style="font-size: 14px; line-height: 1.3;">
+                            Did you know drivers spend as much as 17 hours a day trying to find parking spaces?
+                            Imagine those hours eventually eats into your meeting time. <br>
+                            Yes, it can get frustrating. Lets us help you remove those frustrations.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center mb-3">
+                <div class="col-sm-6">
+                    <div style="border-right:3px solid #009a00;" class="php-email-form">
+                        <h5 class="card-title" style="color: #009a00;"><b>Events</b></h5>
+                        <p class="card-text" style="font-size: 14px; line-height: 1.3;">
+                            In this part of the world where we have a lot of guest drive in. Sometimes rather
+                            than enjoying your event, we have a lot of people worry about their cars and where
+                            they need to park to stay safe.
+                            <br>
+                            you don't want to park wrongly on the road and have your car hit by another driver.
+                            <br>
+                            Let us help you fix that!
+                        </p>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div style="height: 220px;" class="php-email-form p-0">
+                        <img src="{% static 'images/events.jpg' %}" width="100%" height="100%" alt="image">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-5 mb-5"></div>
+
         <div class="row justify-content-center">
             <div class="col-sm-12 text-center">
-                <h1>Join Our Waitlist</h1>
+                <h3>Become Part Of Our <span style="color: #009a00;"><b>Community</b></span></h3>
             </div>
             <div class="col-sm-6">
                 <form action="{% url 'waitlist' %}" method="POST" role="form" class="php-email-form">

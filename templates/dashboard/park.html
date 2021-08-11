@@ -91,7 +91,7 @@
                                 <div class="page-header float-right">
                                     <div class="page-title">
                                         <div class="breadcrumb text-right">
-                                            <a href="https://www.google.com/maps/" target="_blank" class="btn btn-sm btn-orange float-right">Get Latitude and Longitude</a>
+                                            <a class="btn btn-sm btn-orange float-right" data-toggle="modal" data-target="#getLonLatModal">Get Latitude and Longitude</a>
                                             <a href="{% url 'dashboard_park_add' %}" type="button"
                                                 class="btn btn-sm btn-dark float-right">Register Park</a>
                                         </div>
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                {% if request.user.is_superadmin %}
+                {% if request.user.is_superuser %}
                     <div class="content">
                         <div class="animated fadeIn">
                             <div class="row">
@@ -172,7 +172,6 @@
                                         {% else %}
                                             <i class="fa fa-2x fa-trash"></i>
                                             No park registered under this company yet!!
-                                            {{request.user.administrator.company.park_set.all}}
                                         {% endif %}
                                     {% endfor %}
                             </div>
@@ -180,8 +179,52 @@
                     </div>
                 {% endif %}
             </div>
-        </div>           
+        </div>
+        
+        <div class="modal fade" id="getLonLatModal" tabindex="-1" role="dialog" aria-labelledby="getLonLatModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="getLonLatModalLabel">Modal title</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                Get Current Latitude and Longitude?
+                                click <button onclick="getCurrentLatLon()" class="btn btn-sm">Here</button>
+                                <br>
+                                <div id="LatLon" style="display: none;"></div>
+                            </div>
+                            <div class="col-sm-6">
+                                Visit google maps to get company Latitude and Longitude?
+                                click <a href="https://www.google.com/maps/" target="_blank" class="btn btn-sm">Here</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <div class="clearfix"></div>
 </div>
+{% endblock %}
+
+{% block bottomscript %}
+    <script>
+        function getCurrentLatLon() {
+            let LatLon = document.getElementById("LatLon");
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    LatLon.innerHTML = `Longitude: ${position.coords.longitude} <br> Latitude: ${position.coords.latitude}`;
+                    LatLon.style.display = "block";
+                });
+            } else {
+                LatLon.innerHTML = `Can't get current location`;
+                LatLon.style.display = "block";
+            }
+        }
+    </script>
 {% endblock %}

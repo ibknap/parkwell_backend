@@ -97,63 +97,123 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
+                        {% if request.user.is_superuser %}
                         <tbody>
                             {% for padmin in padmins %}
-                            <tr>
-                                <td class="serial">{{ padmin.user.id }}</td>
-                                <td class="avatar">
-                                    <div class="round-img">
-                                        <a href="#"><img class="rounded-circle border border-dark" src="{{ padmin.photo.url }}" width="42"
-                                                height="42" alt="avatar" /></a>
-                                    </div>
-                                </td>
-                                <td>
-                                    {{ padmin.user.username|capfirst }}
-                                </td>
-                                <td>
-                                    {{ padmin.user.email }}
-                                </td>
-                                <td>
-                                    <span class="product">{{ padmin.mobile_number }}</span>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
-                                        data-target="#viewmodal{{ padmin.id }}">
-                                        View
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <div class="modal fade" id="viewmodal{{ padmin.id }}" tabindex="-1" role="dialog"
-                                aria-labelledby="viewmodal{{ padmin.id }}Label" aria-hidden="true">
-                                <div class="modal-dialog modal-md" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title text-center" id="viewmodal{{ padmin.id }}Label">
-                                                <b>{{padmin.user.username|capfirst }} Info</b>
-                                            </h5>
+                                <tr>
+                                    <td class="serial">{{ padmin.user.id }}</td>
+                                    <td class="avatar">
+                                        <div class="round-img">
+                                            <a href="#"><img class="rounded-circle border border-dark" src="{{ padmin.photo.url }}" width="42"
+                                                    height="42" alt="avatar" /></a>
                                         </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-12 text-center">
-                                                    <img src="{{ padmin.photo.url }}" class="rounded-circle border border-dark" width="100" height="100" alt="avatar"> <br/>
-                                                    <b>User:</b> {{ padmin.user.username|capfirst }} <br/>
-                                                    <b>Email:</b> <a href="mailto:{{ padmin.user.email }}">{{ padmin.user.email }}</a> <br/>
-                                                    <b>Mobile Number:</b> <a href="tel:{{ padmin.mobile_number }}">{{ padmin.mobile_number }}</a> <br/>
-                                                    <b>Verification status:</b> {% if padmin.verification == True %}<span class="text-success">verified</span>{% else %}<span class="text-warning">pending</span>{% endif %} <br/>
+                                    </td>
+                                    <td>
+                                        {{ padmin.user.username|capfirst }}
+                                    </td>
+                                    <td>
+                                        {{ padmin.user.email }}
+                                    </td>
+                                    <td>
+                                        <span class="product">{{ padmin.mobile_number }}</span>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
+                                            data-target="#viewmodal{{ padmin.id }}">
+                                            View
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <div class="modal fade" id="viewmodal{{ padmin.id }}" tabindex="-1" role="dialog"
+                                    aria-labelledby="viewmodal{{ padmin.id }}Label" aria-hidden="true">
+                                    <div class="modal-dialog modal-md" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title text-center" id="viewmodal{{ padmin.id }}Label">
+                                                    <b>{{padmin.user.username|capfirst }} Info</b>
+                                                </h5>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-12 text-center">
+                                                        <img src="{{ padmin.photo.url }}" class="rounded-circle border border-dark" width="100" height="100" alt="avatar"> <br/>
+                                                        <b>User:</b> {{ padmin.user.username|capfirst }} <br/>
+                                                        <b>Email:</b> <a href="mailto:{{ padmin.user.email }}">{{ padmin.user.email }}</a> <br/>
+                                                        <b>Mobile Number:</b> <a href="tel:{{ padmin.mobile_number }}">{{ padmin.mobile_number }}</a> <br/>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
-                                                Back
-                                            </button>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                                    Back
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
                             {% endfor %}
                         </tbody>
+                        {% elif request.user.administrator.is_company_admin %}
+                            <tbody>
+                                {% for padmin in padmins %}
+                                    {% if padmin.company_admin == request.user.administrator %}                                        
+                                        <tr>
+                                            <td class="serial">{{ padmin.user.id }}</td>
+                                            <td class="avatar">
+                                                <div class="round-img">
+                                                    <a href="#"><img class="rounded-circle border border-dark" src="{{ padmin.photo.url }}" width="42"
+                                                            height="42" alt="avatar" /></a>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ padmin.user.username|capfirst }}
+                                            </td>
+                                            <td>
+                                                {{ padmin.user.email }}
+                                            </td>
+                                            <td>
+                                                <span class="product">{{ padmin.mobile_number }}</span>
+                                            </td>
+                                            <td>
+                                                <button type="button" class="btn btn-sm btn-success" data-toggle="modal"
+                                                    data-target="#viewmodal{{ padmin.id }}">
+                                                    View
+                                                </button>
+                                            </td>
+                                        </tr>
+
+                                        <div class="modal fade" id="viewmodal{{ padmin.id }}" tabindex="-1" role="dialog"
+                                            aria-labelledby="viewmodal{{ padmin.id }}Label" aria-hidden="true">
+                                            <div class="modal-dialog modal-md" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title text-center" id="viewmodal{{ padmin.id }}Label">
+                                                            <b>{{padmin.user.username|capfirst }} Info</b>
+                                                        </h5>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="row">
+                                                            <div class="col-12 text-center">
+                                                                <img src="{{ padmin.photo.url }}" class="rounded-circle border border-dark" width="100" height="100" alt="avatar"> <br/>
+                                                                <b>User:</b> {{ padmin.user.username|capfirst }} <br/>
+                                                                <b>Email:</b> <a href="mailto:{{ padmin.user.email }}">{{ padmin.user.email }}</a> <br/>
+                                                                <b>Mobile Number:</b> <a href="tel:{{ padmin.mobile_number }}">{{ padmin.mobile_number }}</a> <br/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">
+                                                            Back
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        {% endif %}
                     </table>
                 </div>
             </div>
@@ -182,7 +242,7 @@
                                         {% endfor %}
                                     </div>
                                     <div class="col-sm-12">
-                                        {% for field in administrator_form %}
+                                        {% for field in park_admin_form %}
                                             <div class="form-group">
                                                 {{ field|add_class:'form-control' }}
                                                 {% for error in field.errors %}

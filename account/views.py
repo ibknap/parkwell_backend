@@ -217,22 +217,16 @@ class AdminLogin(View):
                         return redirect('dashboard')
                 except Administrator.DoesNotExist:
                     try:
-                        if Administrator.objects.get(user=user, verification=True, is_park_admin=True):
-                            login(request, user)
-                            messages.success(request, f'{ request.user.username } Login as "Park Admin!"')
-                            return redirect('dashboard')
-                    except Administrator.DoesNotExist:
-                        try:
-                            is_super_admin = User.objects.get(username=user.username, is_superuser=True)
-                            login(request, is_super_admin)
-                            messages.success(request, f'{ request.user.username } Login as "Super Admin!"')
-                            return redirect('dashboard')
-                        except User.DoesNotExist:
-                            if Administrator.objects.filter(user=user).exists():
-                                messages.error(request, "Administrator not verified!")
-                                return redirect('admin_login')
-                            messages.error(request, "Check user's credentials!")
+                        is_super_admin = User.objects.get(username=user.username, is_superuser=True)
+                        login(request, is_super_admin)
+                        messages.success(request, f'{ request.user.username } Login as "Super Admin!"')
+                        return redirect('dashboard')
+                    except User.DoesNotExist:
+                        if Administrator.objects.filter(user=user).exists():
+                            messages.error(request, "Administrator not verified!")
                             return redirect('admin_login')
+                        messages.error(request, "Check user's credentials!")
+                        return redirect('admin_login')
             else:
                 messages.info(request, 'Inactive user!')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
