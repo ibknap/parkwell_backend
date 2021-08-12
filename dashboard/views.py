@@ -1,22 +1,26 @@
+from django.core.mail import send_mail
 from main.models import Navigate
-from django.http import request
 from django.views.generic.base import TemplateView
 from park.forms import ParkForm
+from parkwell_backend.settings import EMAIL_HOST_USER
 from account.models import Administrator, ParkAdmin
 from django.contrib.auth.models import User
 from account.forms import AdministratorForm, ParkAdminForm, RegisterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http.response import HttpResponseRedirect
+from django.http.response import BadHeaderError, HttpResponseRedirect
 from django.views.generic import View, DetailView
 from django.shortcuts import redirect, render
 from company.forms import CompanyForm
 from django.contrib import messages
 from company.models import Company
 from django.utils import timezone
+from email.errors import HeaderParseError
+from django.template import loader
 from park.models import Park
 import datetime
+import socket
 
 class DashboardCheckEmail(LoginRequiredMixin, View):
     login_url = 'admin_login'
@@ -352,11 +356,34 @@ class VerifyAdmin(LoginRequiredMixin, View):
     login_url = 'admin_login'
 
     def get(self, request, pk, *args, **kwargs):
+        context = {}
         admin = Administrator.objects.get(id=pk)
         admin.verification = True
         admin.save()
-        messages.success(request, 'Company Admin verified!')
-        return redirect('dashboard_cadmin')
+
+        context['subject'] = "Company Admin Verified!"
+        context['message'] = f"Hi {admin.user.username}, your Parkwell Africa company admin account has been verified! You can how login in and create company and parks."
+        actual_message = loader.render_to_string('emails/message.html', context)
+
+        try:
+            send_mail("Company Admin Verified! Parkwell.", actual_message, EMAIL_HOST_USER, [admin.user.email], fail_silently = False, html_message=actual_message)
+            messages.success(request, 'Company Admin verified!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        except socket.gaierror:
+            messages.error(request, 'No internet connect')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        except HeaderParseError:
+            messages.error(request, 'A user has an invalid domain')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        except BadHeaderError:
+            messages.error(request, 'Bad header')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        except TimeoutError:
+            messages.error(request, 'Time out')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        except ValueError as e:
+            messages.error(request, f'{e}')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class DashboardWaitlist(View):
     template_name='dashboard/waitlist.html'
