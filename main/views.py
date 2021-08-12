@@ -30,7 +30,7 @@ class Waitlist(View):
         listing_form = WaitlistForm(request.POST)
         if listing_form.is_valid():
             listing_form.save()
-            messages.success(request, 'You have been add to waitlist!')
+            messages.success(request, 'You have been added to waitlist!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 class NavigateView(View):

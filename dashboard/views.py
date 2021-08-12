@@ -172,6 +172,16 @@ class DashboardCompanyAdmin(LoginRequiredMixin, View):
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         return render(request, self.template_name, {'register_form': register_form, 'administrator_form': administrator_form})
 
+class DashboardCompanyAdminDelete(LoginRequiredMixin, View):
+    login_url = 'admin_login'
+
+    def get(self, request, pk, *args, **kwargs):
+        admin = Administrator.objects.get(id=pk)
+        user = User.objects.get(id=admin.user.id)
+        user.delete()
+        messages.success(request, 'Company admin deleted!')
+        return redirect('dashboard_cadmin')
+
 class DashboardParkAdmin(LoginRequiredMixin, View):
     login_url = 'admin_login'
     template_name='dashboard/account_padmin.html'
@@ -205,6 +215,16 @@ class DashboardParkAdmin(LoginRequiredMixin, View):
                 messages.success(request, 'Park admin added!')
                 return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         return render(request, self.template_name, {'register_form': register_form, 'park_admin_form': park_admin_form})
+
+class DashboardParkAdminDelete(LoginRequiredMixin, View):
+    login_url = 'admin_login'
+
+    def get(self, request, pk, *args, **kwargs):
+        admin = ParkAdmin.objects.get(id=pk)
+        user = User.objects.get(id=admin.user.id)
+        user.delete()
+        messages.success(request, 'Park admin deleted!')
+        return redirect('dashboard_padmin')
 
 class DashboardBookings(LoginRequiredMixin, View):
     login_url = 'admin_login'

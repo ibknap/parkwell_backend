@@ -36,6 +36,7 @@ def global_context(request):
     context['padmins'] = ParkAdmin.objects.order_by("-id")
     context['companies'] = Company.objects.order_by("-id")
     context['waitlists'] = Waitlist.objects.order_by("-id")
+    context['last_10_parks'] = Park.objects.order_by("-id")[:10]
 
     context['parks_list'] =  json.dumps(list(Park.objects.order_by("-id").values()), cls=DjangoJSONEncoder)
     context['company_list'] = json.dumps(list(Company.objects.order_by("-id").values()), cls=DjangoJSONEncoder)

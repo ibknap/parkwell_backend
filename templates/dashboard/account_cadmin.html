@@ -94,7 +94,8 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>status</th>
-                                <th>Action</th>
+                                <th>View</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,6 +126,9 @@
                                         data-target="#viewmodal{{ cadmin.id }}">
                                         View
                                     </button>
+                                </td>
+                                <td>
+                                    <a href="{% url 'dashboard_cadmin_delete' pk=cadmin.id %}" class="btn btn-sm btn-danger">Delete</a>
                                 </td>
                             </tr>
 

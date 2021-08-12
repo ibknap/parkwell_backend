@@ -19,8 +19,10 @@ urlpatterns = [
     path('waitlist/', views.DashboardWaitlist.as_view(), name="dashboard_waitlist"),
 
     path('cadmin/', views.DashboardCompanyAdmin.as_view(), name='dashboard_cadmin'),
+    path('cadmin/delete/<int:pk>/', views.DashboardCompanyAdminDelete.as_view(), name='dashboard_cadmin_delete'),
     path('cadmin/verify_admin/<int:pk>/', views.VerifyAdmin.as_view(), name='dashboard_verify_admin'),
     path('padmin/', views.DashboardParkAdmin.as_view(), name='dashboard_padmin'),
+    path('padmin/delete/<int:pk>/', views.DashboardParkAdminDelete.as_view(), name='dashboard_padmin_delete'),
     path('bookings/', views.DashboardBookings.as_view(), name='dashboard_bookings'),
 
     path('users_info/', views.DashboardUsersInfo.as_view(), name='dashboard_users_info'),

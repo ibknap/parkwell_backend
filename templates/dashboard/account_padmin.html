@@ -94,7 +94,8 @@
                                 <th>Username</th>
                                 <th>Email</th>
                                 <th>Phone no.</th>
-                                <th>Action</th>
+                                <th>View</th>
+                                <th>Delete</th>
                             </tr>
                         </thead>
                         {% if request.user.is_superuser %}
@@ -122,6 +123,9 @@
                                             data-target="#viewmodal{{ padmin.id }}">
                                             View
                                         </button>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'dashboard_padmin_delete' pk=padmin.id %}" class="btn btn-sm btn-danger">Delete</a>
                                     </td>
                                 </tr>
 

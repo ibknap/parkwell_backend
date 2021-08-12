@@ -9,14 +9,6 @@
                     </a>
                 </li>
                 {% if request.user.is_superuser %}                    
-                    <li class="menu-item {% if request.get_full_path == '/dashboard/company/' %}active{% endif %}">
-                        <a href="{% url 'dashboard_company' %}" class="text-decoration-none">
-                            <i class="menu-icon fa fa-building"></i>Company</a>
-                    </li>
-                    <li class="menu-item {% if request.get_full_path == '/dashboard/park/' %}active{% endif %}">
-                        <a href="{% url 'dashboard_park' %}" class="text-decoration-none">
-                            <i class="menu-icon fa fa-th"></i>Park</a>
-                    </li>
                     <li class="menu-item {% if request.get_full_path == '/dashboard/cadmin/' %}active{% endif %}">
                         <a href="{% url 'dashboard_cadmin' %}" class="text-decoration-none">
                             <i class="menu-icon fas fa-user-shield"></i>Company Admin</a>
@@ -25,6 +17,14 @@
                         <a href="{% url 'dashboard_padmin' %}" class="text-decoration-none">
                             <i class="menu-icon fas fa-user-shield"></i>Park Admin
                         </a>
+                    </li>
+                    <li class="menu-item {% if request.get_full_path == '/dashboard/company/' %}active{% endif %}">
+                        <a href="{% url 'dashboard_company' %}" class="text-decoration-none">
+                            <i class="menu-icon fa fa-building"></i>Companies</a>
+                    </li>
+                    <li class="menu-item {% if request.get_full_path == '/dashboard/park/' %}active{% endif %}">
+                        <a href="{% url 'dashboard_park' %}" class="text-decoration-none">
+                            <i class="menu-icon fa fa-th"></i>Parks</a>
                     </li>
                     <li class="menu-item {% if request.get_full_path == '/dashboard/users_info/' %}active{% endif %}">
                         <a href="{% url 'dashboard_users_info' %}" class="text-decoration-none">
@@ -44,16 +44,16 @@
                 {% elif request.user.administrator.is_company_admin %}
                     <li class="menu-item {% if request.get_full_path == '/dashboard/company/' %}active{% endif %}">
                         <a href="{% url 'dashboard_company' %}" class="text-decoration-none">
-                            <i class="menu-icon fa fa-building"></i>Company</a>
-                    </li>
-                    <li class="menu-item {% if request.get_full_path == '/dashboard/park/' %}active{% endif %}">
-                        <a href="{% url 'dashboard_park' %}" class="text-decoration-none">
-                            <i class="menu-icon fa fa-th"></i>Park</a>
+                            <i class="menu-icon fa fa-building"></i>Companies</a>
                     </li>
                     <li class="menu-item {% if request.get_full_path == '/dashboard/padmin/' %}active{% endif %}">
                         <a href="{% url 'dashboard_padmin' %}" class="text-decoration-none">
                             <i class="menu-icon fas fa-user-shield"></i>Park Admin
                         </a>
+                    </li>
+                    <li class="menu-item {% if request.get_full_path == '/dashboard/park/' %}active{% endif %}">
+                        <a href="{% url 'dashboard_park' %}" class="text-decoration-none">
+                            <i class="menu-icon fa fa-th"></i>Parks</a>
                     </li>
                 {% endif %}
                 <li class="menu-item mt-5">
