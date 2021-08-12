@@ -1,0 +1,133 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+{% load widget_tweaks %}
+
+{% block description %}
+    <meta property="og:description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and carbon emission." />
+    <meta itemprop="description" name="description" content="Parkwell is efficiently making parking easy, quick and effortless for drivers, space owners and cities; reducing traffic congestion and carbon emission." />
+{% endblock %}
+{% block keywords %}
+    <meta name="keywords" content="Parkwell, parking, traffic" />
+{% endblock %}
+{% block title %}
+    <meta property="og:title" content="Parkwell Waitlist">
+    <title>Parkwell Waitlist</title>
+{% endblock %}
+{% block toplink %}
+    <style>
+        #heroWaitlist {
+            width: 100%;
+            height: 100vh;
+            background: url("{% static 'images/waitlist_home.jpg' %}") top center no-repeat;
+            background-size: cover;
+            position: relative;
+            padding-top: 82px;
+        }
+        #heroWaitlist .search-box {
+            font-size: 15px;
+        }
+        
+        #heroWaitlist .search-box h4 {
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        
+        #heroWaitlist .search-box form {
+            margin-top: 30px;
+        }
+        
+        #heroWaitlist .search-box input {
+            height: 4em;
+            outline: none;
+        }
+        
+        #heroWaitlist .search-box form input[type="email"] {
+            border: 0;
+            padding: 4px 8px;
+            width: calc(100% - 100px);
+        }
+        
+        #heroWaitlist .search-box form input[type="text"] {
+            border: 0;
+            padding: 4px 8px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        #heroWaitlist .search-box form input[type="submit"] {
+            position: absolute;
+            right: -1px;
+            top: 0;
+            bottom: 0;
+            border: 0;
+            background: none;
+            font-size: 16px;
+            padding: 0 20px;
+            background: #009a00;
+            color: #fff;
+            transition: 0.3s;
+            border-radius: 0 4px 4px 0;
+            box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        #heroWaitlist .search-box form input[type="submit"]:hover {
+            background: #47cf47;
+        }
+        
+        #heroWaitlist .search-ui a {
+            text-decoration: none;
+            width: 100%;
+        }
+        
+        #heroWaitlist .search-ui a:link,
+        #heroWaitlist .search-ui a:visited {
+            color: #141814;
+            padding: 4px 8px;
+            display: inline-block;
+        }
+        
+        #heroWaitlist .search-ui a:hover,
+        #heroWaitlist .search-ui a:active {
+            color: white;
+            background-color: #009a00;
+        }
+        .get-started-btn {
+            border: 0 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <section id="heroWaitlist" class="d-flex align-items-center">
+        <div class="container-fluid" data-aos="zoom-out" data-aos-delay="100">
+            <div class="row justify-content-center">
+                <div class="col-xl-10">
+                    <div class="row justify-content-center">
+                        <div class="col-sm-12 text-center" style="color: #000;">
+                            <h3>Become Part Of Our <span style="color: #009a00;"><b>Community</b></span></h3>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6 search-box text-center">
+                            <form action="{% url 'waitlist' %}" method="POST" role="form">
+                                {% csrf_token %}
+                                    {% for field in waitlist_form %}
+                                        {{ field|add_class:'form-control'}}
+                                        {% for error in field.errors %}
+                                        <i class="text-danger">{{ error }}</i>
+                                        {% endfor %}
+                                    {% endfor %}
+                                <div class="text-center mt-2">
+                                    <button type="submit" class="get-started-btn">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

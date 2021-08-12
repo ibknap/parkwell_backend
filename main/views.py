@@ -33,6 +33,19 @@ class Waitlist(View):
             messages.success(request, 'You have been added to waitlist!')
             return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
+class WaitlistHome(View):
+    template_name='main/waitlist_home.html'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+            
+    def post(self, request, *args, **kwargs):
+        listing_form = WaitlistForm(request.POST)
+        if listing_form.is_valid():
+            listing_form.save()
+            messages.success(request, 'You have been added to waitlist!')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 class NavigateView(View):
     def get(self, request, park_id, coord_lat, coord_lon, *args, **kwargs):
         park = Park.objects.get(id=park_id)

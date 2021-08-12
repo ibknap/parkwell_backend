@@ -87,24 +87,18 @@
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th class="serial">ID</th>
-                                        <th>Full Name</th>
+                                        <th>ID</th>
                                         <th>Email</th>
-                                        <th>Mobile Number</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for list in waitlists %}
                                     <tr>
-                                        <td class="serial">{{ list.id }}</td>
                                         <td>
-                                            <span class="name">{{ list.full_name }}</span>
+                                            <span>{{ list.id }}</span>
                                         </td>
                                         <td>
-                                            <span class="name"><a href="mailto:{{ list.email }}">{{ list.email }}</a></span>
-                                        </td>
-                                        <td>
-                                            <span class="name"><a href="tel:{{ list.mobile_number }}">{{ list.mobile_number }}</a></span>
+                                            <span><a href="mailto:{{ list.email }}">{{ list.email }}</a></span>
                                         </td>
                                     </tr>
                                     {% endfor %}
