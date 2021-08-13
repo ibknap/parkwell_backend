@@ -16,6 +16,15 @@
 {% endblock %}
 {% block toplink %}
     <style>
+        @media screen and (max-width: 768px) {
+            #hero {
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                left: 0;
+            }
+        }
+
         #hero .search-box {
             font-size: 15px;
         }

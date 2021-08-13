@@ -19,10 +19,16 @@
         #heroWaitlist {
             width: 100% !important;
             height: 100vh !important;
-            background: url("{% static 'images/waitlist_home.jpg' %}") top center no-repeat !important;
+            background: url("{% static 'images/waitlist_home.jpg' %}") no-repeat !important;
             background-size: cover !important;
-            position: relative !important;
-            padding-top: 82px !important;
+        }
+        @media screen and (max-width: 768px) {
+            #heroWaitlist {
+                width: 100vw;
+                height: 100vh;
+                top: 0;
+                left: 0;
+            }
         }
         #heroWaitlist:before {
             content: "";
@@ -167,7 +173,7 @@
             <div class="row justify-content-center">
                 <div class="col-xl-10">
                     <div class="row justify-content-center">
-                        <div class="col-sm-12 text-center" style="color: #000;">
+                        <div class="col-sm-12 text-center text-white">
                             <h3>Become Part Of Our <span style="color: #009a00;"><b>Community</b></span></h3>
                         </div>
                     </div>
