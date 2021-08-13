@@ -17,12 +17,73 @@
 {% block toplink %}
     <style>
         #heroWaitlist {
-            width: 100%;
-            height: 100vh;
-            background: url("{% static 'images/waitlist_home.jpg' %}") top center no-repeat;
-            background-size: cover;
-            position: relative;
-            padding-top: 82px;
+            width: 100% !important;
+            height: 100vh !important;
+            background: url("{% static 'images/waitlist_home.jpg' %}") top center no-repeat !important;
+            background-size: cover !important;
+            position: relative !important;
+            padding-top: 82px !important;
+        }
+        #heroWaitlist:before {
+            content: "";
+            background: rgba(0, 0, 0, 0.6);
+            position: absolute;
+            bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+        }
+
+        #heroWaitlist h1 {
+            margin: 0;
+            font-size: 48px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        #heroWaitlist h2 {
+            color: #fff;
+            margin: 10px 0 0 0;
+            font-size: 24px;
+        }
+
+        #heroWaitlist .btn-get-started {
+            font-weight: 500;
+            font-size: 16px;
+            letter-spacing: 1px;
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 4px;
+            transition: 0.5s;
+            margin-top: 30px;
+            color: #fff;
+            background: #009A00;
+            border: 2px solid #009A00;
+        }
+
+        #heroWaitlist .btn-get-started:hover {
+            background: transparent;
+            border-color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            #heroWaitlist {
+                text-align: center;
+                padding-top: 58px;
+            }
+            #heroWaitlist h1 {
+                font-size: 28px;
+            }
+            #heroWaitlist h2 {
+                font-size: 18px;
+                line-height: 24px;
+            }
+        }
+
+        @media (max-height: 500px) {
+            #heroWaitlist {
+                height: 120vh;
+            }
         }
         #heroWaitlist .search-box {
             font-size: 15px;
@@ -121,7 +182,7 @@
                                         {% endfor %}
                                     {% endfor %}
                                 <div class="text-center mt-2">
-                                    <button type="submit" class="get-started-btn">Submit</button>
+                                    <button type="submit" class="get-started-btn m-0">Submit</button>
                                 </div>
                             </form>
                         </div>
