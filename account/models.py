@@ -12,7 +12,7 @@ class Administrator(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     verification = models.BooleanField(_("verification"), default=False)
     is_company_admin = models.BooleanField(_("Company admin"), default=False)
-    photo = models.ImageField(_("Administrator's photo(optional)"), upload_to='administrator_photos/', default="../static/images/avatar.png", blank=True, null=True)
+    photo = models.ImageField(_("Administrator's photo(optional)"), upload_to='administrator_photos/', default="avatar.png", blank=True, null=True)
     mobile_number = models.CharField(_("Administrator's mobile number"), validators=[mobile_num_regex], max_length=20)
     # timestamp
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
