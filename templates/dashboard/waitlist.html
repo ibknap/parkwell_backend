@@ -13,8 +13,8 @@
 <meta name="keywords" content="Parkwell, parking, traffic" />
 {% endblock %}
 {% block title %}
-<meta property="og:title" content="Dashboard - Listing">
-<title>Dashboard - Listing</title>
+<meta property="og:title" content="Dashboard - Waitlist">
+<title>Dashboard - Waitlist</title>
 {% endblock %}
 {% block toplink %}
 <style>
@@ -82,6 +82,9 @@
                     <div class="card">
                         <div class="card-header">
                             <strong class="card-title">Waitlist</strong>
+                            {% if request.user.is_superuser %}
+                                <a href="{% url 'export_waitlist' %}" class="btn btn-sm btn-warning float-right">Export Waitlist</a>
+                            {% endif %}                                
                         </div>
                         <div class="table-stats order-table ov-h table-responsive">
                             <table class="table table-hover table-bordered">

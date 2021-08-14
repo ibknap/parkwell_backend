@@ -84,6 +84,9 @@
                         data-target="#addmodal">
                         Register Park Admin
                     </button>
+                    {% if request.user.is_superuser %}
+                        <a href="{% url 'export_park_admin' %}" class="btn mr-1 btn-sm btn-warning float-right">Export Park Admins</a>
+                    {% endif %}
                 </div>
                 <div class="table-stats order-table ov-h">
                     <table class="table">

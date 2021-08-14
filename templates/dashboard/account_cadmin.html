@@ -84,6 +84,10 @@
                         data-target="#addmodal">
                         Register Company Admin
                     </button>
+                    {% if request.user.is_superuser %}                        
+                        <a href="{% url 'export_non_verified_company_admin' %}" class="btn mr-1 btn-sm btn-warning float-right">Export Non-Verified Admins</a>
+                        <a href="{% url 'export_verified_company_admin' %}" class="btn mr-1 btn-sm btn-warning float-right">Export Verified Admins</a>
+                    {% endif %}
                 </div>
                 <div class="table-stats order-table ov-h">
                     <table class="table">

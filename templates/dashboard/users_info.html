@@ -82,6 +82,9 @@
                     <div class="card">
                         <div class="card-header">
                             <strong class="card-title">Users information</strong>
+                            {% if request.user.is_superuser %}
+                                <a href="{% url 'export_all_users' %}" class="btn btn-sm btn-warning float-right">Export All Users</a>
+                            {% endif %}      
                         </div>
                         <div class="table-stats order-table ov-h table-responsive">
                             <table class="table table-hover table-bordered">

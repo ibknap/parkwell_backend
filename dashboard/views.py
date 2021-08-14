@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from main.models import Navigate
+from main.models import Navigate, Waitlist
 from django.views.generic.base import TemplateView
 from park.forms import ParkForm
 from parkwell_backend.settings import EMAIL_HOST_USER
@@ -9,7 +9,7 @@ from account.forms import AdministratorForm, ParkAdminForm, RegisterForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http.response import BadHeaderError, HttpResponseRedirect
+from django.http.response import BadHeaderError, HttpResponse, HttpResponseRedirect
 from django.views.generic import View, DetailView
 from django.shortcuts import redirect, render
 from company.forms import CompanyForm
@@ -21,6 +21,9 @@ from django.template import loader
 from park.models import Park
 import datetime
 import socket
+import csv
+import random
+import string
 
 class DashboardCheckEmail(LoginRequiredMixin, View):
     login_url = 'admin_login'
@@ -390,3 +393,78 @@ class DashboardWaitlist(View):
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
+
+def export_waitlist(request):
+    if request.user.is_superuser:
+        random_id = f"_{''.join(random.choices(string.ascii_uppercase + string.digits, k=10))}"
+        waitlist = Waitlist.objects.all()
+        response = HttpResponse()
+        response['Content-Disposition'] = f'attachment; filename=waitlist{random_id}.csv'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'EMAIL ADDRESS'])
+        waitlists = waitlist.values_list('id', 'email')
+        for wait in waitlists:
+            writer.writerow(wait)
+        return response
+    messages.error(request, "You don't have permission!")
+    return redirect('dashboard_waitlist')
+
+def export_verified_company_admin(request):
+    if request.user.is_superuser:
+        random_id = f"_{''.join(random.choices(string.ascii_uppercase + string.digits, k=10))}"
+        verified_company_admin = Administrator.objects.filter(is_company_admin=True, verification=True)
+        response = HttpResponse()
+        response['Content-Disposition'] = f'attachment; filename=verified_company_admin{random_id}.csv'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'USERNAME', 'EMAIL ADDRESS', 'PHONE NUMBER'])
+        company_admin = verified_company_admin.values_list('id', 'user__username', 'user__email', 'mobile_number')
+        for admin in company_admin:
+            writer.writerow(admin)
+        return response
+    messages.error(request, "You don't have permission!")
+    return redirect('dashboard_cadmin')
+
+def export_non_verified_company_admin(request):
+    if request.user.is_superuser:
+        random_id = f"_{''.join(random.choices(string.ascii_uppercase + string.digits, k=10))}"
+        non_verified_company_admin = Administrator.objects.filter(is_company_admin=True, verification=False)
+        response = HttpResponse()
+        response['Content-Disposition'] = f'attachment; filename=non_verified_company_admin{random_id}.csv'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'USERNAME', 'EMAIL ADDRESS', 'PHONE NUMBER'])
+        company_admin = non_verified_company_admin.values_list('id', 'user__username', 'user__email', 'mobile_number')
+        for admin in company_admin:
+            writer.writerow(admin)
+        return response
+    messages.error(request, "You don't have permission!")
+    return redirect('dashboard_cadmin')
+
+def export_park_admin(request):
+    if request.user.is_superuser:
+        random_id = f"_{''.join(random.choices(string.ascii_uppercase + string.digits, k=10))}"
+        park_admin = ParkAdmin.objects.all()
+        response = HttpResponse()
+        response['Content-Disposition'] = f'attachment; filename=park_admin{random_id}.csv'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'USERNAME', 'EMAIL ADDRESS', 'COMPANY ADMIN', 'PHONE NUMBER'])
+        park_admins = park_admin.values_list('id', 'user__username', 'user__email', 'company_admin__user__username', 'mobile_number')
+        for admin in park_admins:
+            writer.writerow(admin)
+        return response
+    messages.error(request, "You don't have permission!")
+    return redirect('dashboard_padmin')
+
+def export_all_users(request):
+    if request.user.is_superuser:
+        random_id = f"_{''.join(random.choices(string.ascii_uppercase + string.digits, k=10))}"
+        users = User.objects.all()
+        response = HttpResponse()
+        response['Content-Disposition'] = f'attachment; filename=users{random_id}.csv'
+        writer = csv.writer(response)
+        writer.writerow(['ID', 'USERNAME', 'EMAIL ADDRESS', 'FIRST NAME', 'LAST NAME'])
+        all_users = users.values_list('id', 'username', 'email', 'first_name', 'last_name')
+        for user in all_users:
+            writer.writerow(user)
+        return response
+    messages.error(request, "You don't have permission!")
+    return redirect('dashboard_users_info')

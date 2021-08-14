@@ -18,6 +18,12 @@ urlpatterns = [
     path('check_email/<email>/', views.DashboardCheckEmail.as_view(), name='dashboard_check_email'),
     path('waitlist/', views.DashboardWaitlist.as_view(), name="dashboard_waitlist"),
 
+    path('export_waitlist/', views.export_waitlist, name="export_waitlist"),
+    path('export_verified_company_admin/', views.export_verified_company_admin, name="export_verified_company_admin"),
+    path('export_non_verified_company_admin/', views.export_non_verified_company_admin, name="export_non_verified_company_admin"),
+    path('export_park_admin/', views.export_park_admin, name="export_park_admin"),
+    path('export_all_users/', views.export_all_users, name="export_all_users"),
+
     path('cadmin/', views.DashboardCompanyAdmin.as_view(), name='dashboard_cadmin'),
     path('cadmin/delete/<int:pk>/', views.DashboardCompanyAdminDelete.as_view(), name='dashboard_cadmin_delete'),
     path('cadmin/verify_admin/<int:pk>/', views.VerifyAdmin.as_view(), name='dashboard_verify_admin'),
