@@ -19,7 +19,7 @@ About Parkwell. Parkwell is efficiently making parking easy, quick and effortles
 
 ```bash
 # Clone this project
-$ git clone https://github.com/ibukunoluwanap/parkwell
+$ git clone https://github.com/ibukunoluwanap/parkwell_backend
 
 # Access
 $ cd parkwell
