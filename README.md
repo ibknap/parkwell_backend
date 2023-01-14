@@ -35,7 +35,7 @@ $ python manage.py runserver
 This project is under license from GPL. For more details, see the [LICENSE](LICENSE) file.
 
 
-Made with :heart: by <a href="https://github.com/Ibukunoluwa985" target="_blank">Ibukunoluwa Naphtali</a>
+Made with :heart: by <a href="https://github.com/ibukunoluwanap" target="_blank">Ibukunoluwa Naphtali</a>
 
 &#xa0;
 
