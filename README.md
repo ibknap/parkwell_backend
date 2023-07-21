@@ -19,13 +19,16 @@ About Parkwell. Parkwell is efficiently making parking easy, quick and effortles
 
 ```bash
 # Clone this project
-$ git clone https://github.com/ibukunoluwanap/parkwell_backend
+git clone https://github.com/ibukunoluwanap/parkwell_backend
 
 # Access
-$ cd parkwell
+cd parkwell
+
+# Install packages
+pip install -r requirements.txt
 
 # Run the project
-$ python manage.py runserver
+python manage.py runserver
 
 # The server will initialize in the <http://127.0.0.1:8000>
 ```

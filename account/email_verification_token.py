@@ -1,11 +1,11 @@
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-import six
+from six import text_type
 
 class EmailVerificationToken(PasswordResetTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         return (
-            six.text_type(user.pk) + six.text_type(timestamp) +
-            six.text_type(user.is_active)
+            text_type(user.pk) + text_type(timestamp) +
+            text_type(user.is_active)
         )
         
 email_activation_token = EmailVerificationToken()
